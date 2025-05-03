@@ -1,0 +1,212 @@
+@import "tailwindcss";
+@font-face {
+    font-family: 'Minecraft';
+    src: url('../src/fonts/Minecrafter-MA3Dw.ttf');
+}
+@font-face {
+    font-family: 'Minecraft1';
+    src: url('../src/fonts/MinecraftTen-VGORe.ttf');
+}
+@font-face {
+    font-family: 'Minecraft2';
+    src: url('../src/fonts/Minecraftchmc-dBlX.ttf');
+}
+
+@keyframes slideUp {
+    0% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+* {
+    @apply max-w-full;
+}
+
+body {
+    background-image: url("./images/background.gif");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+main {
+    background-color: rgb(0,0,0, .5);
+    @apply min-h-[100vh] w-full mt-14 max-w-full p-2;
+}
+
+header {
+    @apply fixed w-full top-0 z-1 shadow-2xs shadow-black;
+}
+
+.button {
+    @apply transition-all duration-500 ease-in-out flex items-center justify-center gap-1 text-stone-50 uppercase flex-row flex-nowrap font-bold p-2 rounded-full text-base;
+}
+
+.button:hover {
+    @apply bg-cyan-600;
+}
+
+.button_selected {
+    @apply bg-cyan-600 cursor-not-allowed;
+}
+
+.button_selected img {
+    @apply animate-pulse;
+}
+
+.icon {
+    @apply w-6 h-auto invert;
+}
+
+.title {
+    @apply text-stone-50 font-bold text-2xl;
+}
+
+a>* {
+    pointer-events: none;
+}
+
+.button_category {
+    @apply transition-all duration-500 ease-in-out flex items-center justify-center gap-1 text-stone-50 uppercase flex-col flex-nowrap font-bold p-2 rounded-md text-lg md:text-2xl bg-cyan-700 w-full min-w-fit;
+}
+
+.button_category img {
+    @apply w-5 md:w-6 h-auto;
+}
+
+.button_category:hover {
+    @apply bg-cyan-800 brightness-90;
+}
+
+.button_category:hover img {
+    @apply animate-bounce;
+}
+
+.category_selected {
+    @apply cursor-not-allowed bg-cyan-800 brightness-90;
+}
+
+.category_selected img {
+    @apply animate-bounce;
+}
+
+.card {
+    position: relative;
+}
+
+.card .description_card {
+    display: none;
+}
+
+.description_card {
+    @apply duration-700 ease-in-out transition-all top-10 rounded-lg bg-cyan-950;
+}
+
+.card:hover {
+    @apply brightness-150 scale-95;
+}
+
+.card:hover .description_card {
+    display: unset;
+}
+
+.loader {
+    @apply rounded-full animate-spin bg-transparent border-b-4 border-b-cyan-950 w-[3rem] h-[3rem];
+}
+
+.selectorsFooter {
+    @apply flex justify-center flex-col md:flex-row items-center gap-1 md:gap-6;
+}
+
+.selectorsFooter * {
+    @apply duration-500 transition-all ease-in-out;
+}
+
+.selectorsFooter div {
+    @apply w-fit md:w-[25rem] flex justify-center items-center gap-2 rounded-lg p-2 flex-col;
+}
+
+.selectorsFooter h1 {
+    @apply text-lg md:text-2xl font-[Minecraft1] text-cyan-50 border-b-2 border-b-cyan-400 border-dashed;
+}
+
+.selectorsFooter p {
+    @apply font-[Minecraft2] text-cyan-50 text-sm md:text-2xl text-justify;
+}
+
+.selectorsFooter a {
+    @apply flex justify-center items-center gap-2 rounded-lg p-2 md:p-4 uppercase bg-cyan-900 flex-col md:flex-row w-[15rem] shadow-black shadow-md;
+}
+
+.selectorsFooter a:hover {
+    @apply brightness-80;
+}
+
+.selectorsFooter img {
+    @apply w-4 md:w-8 h-auto invert;
+}
+
+.selectedPage {
+    display: unset;
+    animation: slideUp .5s ease-in-out forwards;
+    @apply duration-500 ease-in-out transition-all;
+}
+
+.selectedButtonWiki {
+    @apply brightness-60 cursor-not-allowed;
+}
+
+.wikiContent {
+    @apply text-cyan-50 font-[roboto];
+}
+
+.wikiContent * {
+    animation: slideUp .5s ease-in-out forwards;
+}
+
+.wikiContent h1, h2 {
+    @apply text-2xl md:text-5xl uppercase font-bold font-[roboto] text-shadow-black text-shadow-md mt-4;
+}
+
+.wikiContent h2 {
+    @apply text-2xl font-bold;
+}
+
+.wikiContent p {
+    @apply text-sm md:text-lg md:w-200;
+}
+
+.wikiContent iframe {
+    @apply w-[18rem] h-[9rem] md:w-[40rem] md:h-[25rem] rounded-lg shadow-black shadow-md border-2 border-cyan-500 mt-4;
+}
+
+.terms {
+    @apply mt-10 md:mt-0 flex flex-col justify-start items-center;
+}
+
+.terms * {
+    animation: slideUp .5s ease-in-out forwards;
+    @apply gap-1 p-2;
+}
+
+.terms h1 {
+    @apply text-cyan-50 text-2xl md:text-4xl uppercase font-bold font-[roboto] text-shadow-black text-shadow-md;
+}
+
+.terms h2 {
+    @apply text-cyan-50 text-lg md:text-3xl font-[roboto] font-bold;
+}
+
+.terms p {
+    @apply text-stone-300 text-sm md:text-lg font-[roboto] text-justify md:max-w-[50rem];
+}
+
+.terms ul {
+    @apply list-disc text-stone-300 font-[roboto];
+}

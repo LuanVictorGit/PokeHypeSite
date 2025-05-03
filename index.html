@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PokeHype | Servidor de Pixelmon 1.12.2</title>
+    <link rel="stylesheet" href="./src/output.css">
+    <link rel="icon" href="./src/images/logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Viaoda+Libre&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="bg-cyan-300">
+    <header class="w-screen bg-cyan-950 h-25 md:h-14">
+        <nav class="p-2 h-full flex justify-center flex-col items-center md:flex-row md:justify-evenly">
+            <h1 class="title flex justify-center items-center gap-2 flex-row">
+                <div>
+                    Poke<span class="text-cyan-400">Hype</span>
+                </div>
+                <img src="./src/images/pokeball.png" alt="sword icon" class="w-6 h-auto animate-bounce rotate-20">
+            </h1>
+            <ul class="flex justify-center items-center gap-2 h-full">
+                <li><a href="#" class="button" id="wiki_button">
+                        <img src="./src/images/wiki.png" alt="wiki image" class="icon">
+                        <p>wiki</p>
+                    </a></li>
+                <li><a href="#" class="button" id="shop_button">
+                        <img src="./src/images/shop.png" alt="shop image" class="icon">
+                        <p>loja</p>
+                    </a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="w-screen">
+        <div id="contentMainPage"> <!-- página principal -->
+            <div
+                class="flex flex-col justify-center items-center md:items-start mt-10 p-2 md:p-40 md:gap-10 md:flex-row">
+                <div>
+                    <img src="./src/images/logo.png" alt="logo servidor"
+                        class="w-80 h-auto rounded-full">
+                </div>
+                <div
+                    class="flex w-fit justify-center items-center gap-2 p-2 flex-col bg-cyan-400 shadow-md shadow-black rounded-lg mt-6 md:mt-24">
+                    <p class="font-[Minecraft] text-bold text-shadow-black text-shadow-md text-cyan-50 text-2xl">o melhor servidor de pixelmon do brasil!</p>
+                    <a href="#" title="copiar ip do servidor."
+                        class="flex justify-center items-center gap-2 flex-row transition-all duration-500 ease-in-out p-2 rounded-lg bg-cyan-800 hover:bg-cyan-900"
+                        onclick="
+                        event.preventDefault();
+                        const target = document.getElementById('ip');
+                        if (clickedIp) return;
+                        clickedIp = true;
+                        const texto = target.textContent;
+                        navigator.clipboard.writeText(texto.replace('IP:', '')).then(() => {
+                            target.innerHTML = `<span class='text-green-500'> copiado com sucesso!</span>`
+                            setTimeout(() => {
+                                target.textContent = texto;
+                                clickedIp = false;
+                            }, 800);
+                        }).catch((err) => {
+                            target.textContent = 'erro ao copiar!!'
+                            setTimeout(() => {
+                                target.textContent = texto;
+                                clickedIp = false;
+                            }, 800);
+                        });
+                    ">
+                        <span class="w-fit text-cyan-300 text-bold font-[Minecraft]">
+                            IP:
+                        </span>
+                        <p class="font-[Minecraft] md:min-w-40 text-cyan-50" id="ip">jogar.pokehype.com.br</p>
+                        <span
+                            class="w-fit font-[Minecraft] uppercase text-cyan-50 bg-cyan-500 p-2 flex justify-center items-center rounded-lg shadow-black shadow-md">
+                            copiar
+                        </span>
+                    </a>
+                </div>
+            </div>
+            <div class="flex justify-center items-center md:mt-[-5rem]">
+                <img src="./src/images/scroll.png" alt="image hand to scroll" class="w-8 h-auto animate-bounce invert">
+            </div>
+            <!-- criando a div da loja-->
+            <div class="backdrop-blur-xs rounded-lg min-h-[100vh] md:m-10 shadow-black shadow-lg p-2">
+                <div
+                    class="w-full text-center p-6 bg-cyan-500 shadow-black shadow-2xl flex justify-center items-center rounded-tr-lg rounded-tl-lg">
+                    <p class="font-[Minecraft] text-2xl md:text-3xl text-cyan-50 text-shadow-black text-shadow-md">
+                        selecione a
+                        categoria para visualizar</p>
+                </div>
+                <div class="flex">
+                    <div class="w-fit p-2 bg-cyan-400 shadow-black shadow-2xl flex justify-start items-center gap-1 flex-col"
+                        id="contentCategorysShop">
+                        <div href="#" class="loader"></div>
+                    </div>
+                    <div class="w-full p-2 bg-cyan-300 min-h-[50rem] gap-2 flex flex-row justify-center items-start flex-wrap"
+                        id="contentItemsShop">
+                        <!--configurando o card aqui-->
+                        <div class="loader"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="contentWikiPage"> <!-- página da wiki -->
+            <div
+                class="bg-cyan-950/70 min-w-full min-h-screen rounded-lg shadow-black mt-10 md:mt-0 shadow-md p-1 md:p-4 flex flex-row justify-start items-start gap-1 md:gap-4">
+                <div class="bg-black/30 md:min-w-[18rem] min-h-[100vh] md:rounded-lg flex justify-start p-1 md:p-4 items-center flex-col gap-1 md:gap-2"
+                    id="contentButtonsWiki">
+                    <!-- conteudo dos botões da página -->
+                </div>
+                <div id="contentContentWiki" class="flex justify-start items-center flex-col min-h-[100vh] p-4 gap-10">
+                    <div id="titleContentWiki"
+                        class="font-[roboto] w-full text-center text-3xl md:text-7xl uppercase font-bold text-shadow-black text-shadow-md text-cyan-50 p-4 bg-cyan-400 rounded-tr-4xl rounded-bl-4xl shadow-black shadow-md">
+                        <!-- titulo da wiki -->
+                    </div>
+                    <div class="wikiContent flex justify-start items-start flex-col w-full" id="contentGeneralWiki">
+                        <!-- conteudo geral da wiki -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="contentTermsPage"> <!-- página dos termos de uso -->
+            <div
+                class="bg-cyan-950/80 min-w-full min-h-screen rounded-lg shadow-black shadow-md p-4 flex flex-col justify-center items-center gap-4 terms">
+                <div class="bg-black/30 p-20 w-fit min-h-screen rounded-lg">
+                    <h1>Termos de Uso – PokeHype</h1>
+                    <p><em>Última atualização: 21 de abril de 2025</em></p>
+
+                    <section>
+                        <h2>1. Natureza das Transações</h2>
+                        <p>1.1. Todas as compras realizadas na loja do PokeHype são classificadas como
+                            <strong>doações
+                                voluntárias</strong> para o projeto, com o objetivo de apoiar financeiramente a
+                            manutenção,
+                            desenvolvimento e melhoria contínua do servidor.
+                        </p>
+                        <p>1.2. Os benefícios concedidos aos jogadores em troca dessas doações (itens, permissões,
+                            ranks, moedas
+                            virtuais etc.) são meramente <strong>gratificações simbólicas</strong> e <strong>não possuem
+                                valor
+                                comercial ou monetário</strong> fora do ambiente virtual do servidor.</p>
+                    </section>
+
+                    <section>
+                        <h2>2. Política de Reembolso</h2>
+                        <p>2.1. <strong>Nenhuma compra é passível de reembolso</strong>, total ou parcial, em nenhuma
+                            circunstância, incluindo, mas não se limitando a:</p>
+                        <ul>
+                            <li>Inserção incorreta do nickname (nome de usuário);</li>
+                            <li>Arrependimento após a compra;</li>
+                            <li>Compra duplicada ou não intencional;</li>
+                            <li>Incompatibilidade com versões do cliente ou problemas locais do jogador;</li>
+                            <li>Suspensão, banimento ou perda de acesso ao servidor por violação das regras.</li>
+                        </ul>
+                        <p>2.2. Ao confirmar uma doação, o usuário reconhece que está ciente e de acordo com essa
+                            política
+                            irreversível.</p>
+                    </section>
+
+                    <section>
+                        <h2>3. Responsabilidade do Usuário</h2>
+                        <p>3.1. É de inteira <strong>responsabilidade do usuário</strong> fornecer corretamente os dados
+                            solicitados no momento da compra, especialmente o nickname (nome de usuário Minecraft).</p>
+                        <p>3.2. O PokeHype <strong>não se responsabiliza por erros de digitação</strong>, informações
+                            inseridas de forma incorreta, ou por quaisquer consequências oriundas dessas falhas.</p>
+                        <p>3.3. Recomendamos revisar atentamente todos os dados antes de concluir a transação.</p>
+                    </section>
+
+                    <section>
+                        <h2>4. Alterações nos Benefícios</h2>
+                        <p>4.1. O servidor reserva-se o direito de <strong>alterar, remover ou modificar os
+                                benefícios</strong>
+                            oferecidos como resultado das doações a qualquer momento, sem aviso prévio, visando o
+                            equilíbrio da
+                            jogabilidade ou por motivos técnicos/estratégicos.</p>
+                    </section>
+
+                    <section>
+                        <h2>5. Conduta e Sanções</h2>
+                        <p>5.1. A doação <strong>não isenta</strong> o jogador do cumprimento das regras do servidor. O
+                            descumprimento das normas poderá resultar em punições como <strong>banimento temporário ou
+                                permanente</strong>, sem qualquer tipo de compensação ou restituição dos valores doados.
+                        </p>
+                    </section>
+
+                    <section>
+                        <h2>6. Disposições Gerais</h2>
+                        <p>6.1. Estes Termos de Uso poderão ser atualizados periodicamente. É responsabilidade do
+                            usuário
+                            manter-se informado sobre possíveis alterações.</p>
+                        <p>6.2. Ao concluir uma compra, o usuário <strong>declara estar de acordo com todos os pontos
+                                aqui
+                                descritos</strong>, assumindo total responsabilidade pela transação realizada.</p>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="flex flex-col justify-center items-center gap-2 md:gap-10 w-full bg-cyan-950 p-2 md:p-6">
+        <div class="selectorsFooter">
+            <div>
+                <h1>acessibilidade</h1>
+                <a href="#" id="terms_button">
+                    <img src="./src/images/terms-and-conditions.png" alt="image of terms and conditions">
+                    <p>termos e condicoes</p>
+                </a>
+            </div>
+            <div>
+                <h1>sobre nos</h1>
+                <p>Criamos nosso servidor de Pixelmon em 2024 com um grande investimento em infraestrutura e desenvolvimento, com o objetivo de inovar a comunidade e oferecer uma experiência de jogo única. Focamos em melhorar a jogabilidade, trazendo novas mecânicas, eventos emocionantes e uma otimização que garante uma experiência fluida e sem interrupções. Nossa missão é criar um ambiente divertido e acolhedor para todos, onde cada jogador possa aproveitar ao máximo, com desafios e surpresas constantes. Estamos comprometidos em transformar o servidor em um espaço onde todos possam se divertir e se conectar, proporcionando uma experiência de Pixelmon inesquecível.</p>
+            </div>
+            <div>
+                <h1>redes sociais</h1>
+                <a href="https://discord.gg/RMd3mTtj6M" target="_blank">
+                    <img src="./src/images/discord.png" alt="discord icon image">
+                    <p>discord</p>
+                </a>
+            </div>
+        </div>
+        <div
+            class="text-cyan-50 text-center font-[Minecraft2] bg-cyan-950 brightness-75 p-4 rounded-br-2xl rounded-tl-2xl shadow-black shadow-lg">
+            <p class="text-3xl">Copyright © PokeHype. Sem qualquer vínculo com Mojang Studios, Microsoft ou The Pokémon Company.</p>
+            <p class="text-2xl">Desenvolvido por <a href="https://luandev.blog.br" target="_blank"
+                    class="text-cyan-400">LuanDev</a>.</p>
+        </div>
+    </footer>
+    <script src="./index.js"></script>
+    <script src="./shop.js"></script>
+    <script src="./wiki.js"></script>
+</body>
+
+</html>
