@@ -3,13 +3,12 @@ let clickedIp = false;
 let pageSelected;
 document.addEventListener("DOMContentLoaded", ()=>{
 
-    /*
     // E na verificação em outras páginas:
     const captchaData = JSON.parse(localStorage.getItem('captchaVerified'));
     if (!captchaData || !captchaData.verified || (Date.now() > captchaData.timestamp + captchaData.expiresIn)) {
         window.location.href = "captcha.html";
         return;
-    }*/
+    }
     
     resetPages();
     document.addEventListener("click", (e) => {
