@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,39 +8,18 @@
     <link rel="icon" href="./src/images/logo.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Viaoda+Libre&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        @font-face {
-            font-family: 'Minecraft';
-            src: url('./src/fonts/Minecrafter-MA3Dw.ttf');
-        }
-        @font-face {
-            font-family: 'Minecraft1';
-            src: url('./src/fonts/MinecraftTen-VGORe.ttf');
-        }
-        @font-face {
-            font-family: 'Minecraft2';
-            src: url('./src/fonts/Minecraftchmc-dBlX.ttf');
-        }
-
-        @keyframes slideUp {
-            0% {
-                transform: translateY(100%);
-                opacity: 0;
-            }
-            100% {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes minecraftPulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.7;
-            }
+        :root {
+            --mc-green: #3CB371;
+            --mc-dark-green: #2E8B57;
+            --mc-brown: #8B4513;
+            --mc-dark-brown: #654321;
+            --mc-gray: #696969;
+            --mc-dark-gray: #2F4F4F;
+            --mc-light: #F5F5F5;
+            --mc-yellow: #FFD700;
+            --mc-red: #DC143C;
         }
 
         body {
@@ -47,116 +27,321 @@
             background-repeat: no-repeat;
             background-size: cover;
             background-attachment: fixed;
+            font-family: 'Roboto', sans-serif;
+            color: var(--mc-light);
         }
 
-        .text-shadow {
-            text-shadow: 2px 2px 0 #000;
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: -1;
         }
 
-        .minecraft-card {
+        .mc-font {
+            font-family: 'Press Start 2P', 'Courier New', monospace;
+            font-size: 0.8em;
+            line-height: 1.4;
+        }
+
+        .mc-font-alt {
+            font-family: 'Silkscreen', 'Courier New', monospace;
+        }
+
+        .mc-font-small {
+            font-family: 'Silkscreen', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .mc-button {
+            background: linear-gradient(to bottom, var(--mc-green) 0%, var(--mc-dark-green) 100%);
+            border: 2px solid #1a4d1a;
+            border-radius: 4px;
+            box-shadow: 0 4px 0 #1a4d1a;
+            transition: all 0.1s ease;
+            color: white;
+            text-shadow: 1px 1px 0 #000;
+            cursor: pointer;
+        }
+
+        .mc-button:hover {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #1a4d1a;
+            background: linear-gradient(to bottom, var(--mc-dark-green) 0%, #267326 100%);
+        }
+
+        .mc-button:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .mc-card {
+            background: rgba(45, 45, 45, 0.9);
+            border: 2px solid #5a5a5a;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
             transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
         }
 
-        .minecraft-card:hover {
+        .mc-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+            border-color: var(--mc-green);
+        }
+
+        .mc-nav {
+            background: rgba(30, 30, 30, 0.95);
+            border-bottom: 3px solid var(--mc-green);
+            backdrop-filter: blur(10px);
+        }
+
+        .mc-container {
+            background: rgba(20, 20, 20, 0.85);
+            border: 2px solid #444;
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .mc-input {
+            background: rgba(40, 40, 40, 0.9);
+            border: 2px solid #5a5a5a;
+            border-radius: 4px;
+            color: white;
+            padding: 8px 12px;
+        }
+
+        .mc-input:focus {
+            border-color: var(--mc-green);
+            outline: none;
+        }
+
+        .mc-tab {
+            background: rgba(50, 50, 50, 0.9);
+            border: 2px solid #5a5a5a;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            min-width: fit-content;
+            cursor: pointer;
+        }
+
+        .mc-tab.active {
+            background: rgba(60, 179, 113, 0.9);
+            border-color: var(--mc-green);
+            color: white;
+            font-weight: bold;
+        }
+
+        .mc-tab:hover:not(.active) {
+            background: rgba(70, 70, 70, 0.9);
+        }
+
+        .mc-divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--mc-green), transparent);
+            margin: 20px 0;
+        }
+
+        .mc-badge {
+            background: var(--mc-red);
+            color: white;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .category-scroll {
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            padding: 8px 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--mc-green) rgba(50, 50, 50, 0.8);
+        }
+
+        .category-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .category-scroll::-webkit-scrollbar-track {
+            background: rgba(50, 50, 50, 0.8);
+            border-radius: 3px;
+        }
+
+        .category-scroll::-webkit-scrollbar-thumb {
+            background: var(--mc-green);
+            border-radius: 3px;
         }
 
         .page-hidden {
             display: none !important;
         }
 
-        .category_selected {
-            background-color: rgb(21 94 117) !important;
-            cursor: not-allowed !important;
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
         }
 
-        .category_selected img {
-            animation: bounce 1s infinite;
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
         }
 
-        .button_category:hover img {
-            animation: bounce 1s infinite;
+        .animate-pulse-mc {
+            animation: pulse-mc 2s infinite;
+        }
+
+        @keyframes pulse-mc {
+            0% { box-shadow: 0 0 0 0 rgba(60, 179, 113, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(60, 179, 113, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(60, 179, 113, 0); }
+        }
+
+        .grid-pattern {
+            background-image: 
+                linear-gradient(rgba(60, 179, 113, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(60, 179, 113, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* Corrigir problema de clique em imagens dentro de botões */
+        .clickable img {
+            pointer-events: none;
+        }
+
+        .clickable {
+            cursor: pointer;
+            user-select: none;
         }
     </style>
 </head>
-<body class="bg-cyan-900">
-    <header class="fixed w-full top-0 z-50 bg-cyan-950 bg-opacity-95 backdrop-blur-sm shadow-lg shadow-black">
-        <nav class="p-2 h-full flex justify-center flex-col items-center md:flex-row md:justify-between px-4">
-            <h1 class="flex justify-center items-center gap-2 flex-row text-stone-50 font-bold text-2xl">
-                <div>
-                    Poke<span class="text-cyan-400">Hype</span>
+<body class="grid-pattern">
+    <!-- Header -->
+    <header class="mc-nav fixed w-full top-0 z-50 shadow-lg">
+        <div class="container mx-auto px-4 py-2">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <img src="./src/images/logo.png" alt="PokeHype Logo" class="w-12 h-12 mr-3 animate-float">
+                    <h1 class="mc-font text-2xl md:text-3xl text-white">
+                        Poke<span class="text-green-400">Hype</span>
+                    </h1>
                 </div>
-                <img src="./src/images/pokeball.png" alt="sword icon" class="w-6 h-auto animate-bounce">
-            </h1>
-            <ul class="flex justify-center items-center gap-2 h-full">
-                <li><a href="#" class="minecraft-nav-button transition-all duration-300 ease-in-out flex items-center justify-center gap-1 text-stone-50 uppercase flex-row flex-nowrap font-bold p-2 rounded-full text-base md:text-lg text-shadow hover:bg-cyan-600" id="shop_button">
-                        <img src="./src/images/shop.png" alt="shop image" class="w-6 h-auto invert">
-                        <p>loja</p>
-                    </a></li>
-                <li><a href="#" class="minecraft-nav-button transition-all duration-300 ease-in-out flex items-center justify-center gap-1 text-stone-50 uppercase flex-row flex-nowrap font-bold p-2 rounded-full text-base md:text-lg text-shadow hover:bg-cyan-600" id="wiki_button">
-                        <img src="./src/images/wiki.png" alt="wiki image" class="w-6 h-auto invert">
-                        <p>wiki</p>
-                    </a></li>
-            </ul>
-        </nav>
+                
+                <nav class="flex space-x-2 md:space-x-4">
+                    <button id="shop_button" class="mc-button flex items-center px-4 py-2 clickable">
+                        <img src="./src/images/shop.png" alt="Loja" class="w-5 h-5 mr-2 invert">
+                        <span class="mc-font-small">Loja</span>
+                    </button>
+                    <button id="wiki_button" class="mc-button flex items-center px-4 py-2 clickable">
+                        <img src="./src/images/wiki.png" alt="Wiki" class="w-5 h-5 mr-2 invert">
+                        <span class="mc-font-small">Wiki</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
     </header>
 
-    <main class="min-h-screen w-full mt-16 max-w-full p-2 bg-black bg-opacity-50">
+    <main class="pt-24 pb-16 min-h-screen">
         <!-- Página Principal -->
         <div id="contentMainPage" class="w-full">
-            <div class="flex flex-col justify-center items-center md:items-start mt-10 p-2 md:p-10 md:gap-10 md:flex-row">
-                <div class="flex justify-center items-center">
-                    <img src="./src/images/logo.png" alt="logo servidor" class="w-64 md:w-80 h-auto rounded-full shadow-lg shadow-black">
-                </div>
-                <div class="flex w-full max-w-md justify-center items-center gap-4 flex-col bg-cyan-800 bg-opacity-80 shadow-lg shadow-black rounded-lg mt-6 md:mt-10">
-                    <p class="font-'Minecraft' font-bold text-shadow text-cyan-50 text-xl md:text-2xl text-center">o melhor servidor de pixelmon do brasil!</p>
-                    <a href="#" title="copiar ip do servidor." class="minecraft-ip-button flex justify-center items-center gap-2 flex-row transition-all duration-300 ease-in-out p-3 rounded-lg bg-cyan-900 hover:bg-cyan-950 cursor-pointer w-full max-w-xs" id="ipButton">
-                        <span class="w-fit text-cyan-300 font-bold font-'Minecraft'">
-                            IP:
-                        </span>
-                        <p class="font-'Minecraft' text-cyan-50 truncate flex-grow text-center" id="ip">jogar.pokehype.com.br</p>
-                        <span class="w-fit font-'Minecraft' uppercase bg-cyan-600 p-2 flex justify-center items-center rounded-lg shadow-md shadow-black">
-                            copiar
-                        </span>
-                    </a>
-                </div>
-            </div>
-
-            <div class="flex justify-center items-center mt-8 md:mt-4">
-                <img src="./src/images/scroll.png" alt="image hand to scroll" class="w-8 h-auto invert animate-bounce">
-            </div>
-
-            <!-- Loja -->
-            <div class="backdrop-blur-sm rounded-lg min-h-screen m-2 md:m-4 shadow-lg shadow-black p-2 bg-cyan-800 bg-opacity-70">
-                <div class="w-full text-center p-4 bg-cyan-700 shadow-lg shadow-black flex justify-center items-center rounded-t-lg">
-                    <p class="font-'Minecraft' text-xl md:text-2xl text-cyan-50 text-shadow">
-                        selecione a categoria para visualizar
-                    </p>
-                </div>
-                <div class="flex flex-col md:flex-row">
-                    <div class="w-full md:w-64 p-2 bg-cyan-700 shadow-lg shadow-black flex justify-start items-start gap-2 flex-col md:flex-col" id="contentCategorysShop">
-                        <div class="loader rounded-full animate-spin bg-transparent border-b-4 border-b-cyan-500 w-8 h-8"></div>
+            <!-- Hero Section -->
+            <section class="container mx-auto px-4 mb-12">
+                <div class="flex flex-col lg:flex-row items-center justify-between">
+                    <div class="lg:w-1/2 mb-8 lg:mb-0 text-center lg:text-left">
+                        <h2 class="mc-font text-4xl md:text-5xl lg:text-6xl text-white mb-4">
+                            Poke<span class="text-green-400">Hype</span>
+                        </h2>
+                        <p class="text-xl md:text-2xl mb-6 mc-font-alt text-green-300">
+                            O melhor servidor de Pixelmon do Brasil!
+                        </p>
+                        <p class="mb-8 text-gray-300 max-w-lg mx-auto lg:mx-0 mc-font-small">
+                            Entre em um mundo repleto de aventuras Pokémon, batalhas épicas e uma comunidade incrível. 
+                            Junte-se a nós e viva a experiência definitiva de Pixelmon no Minecraft!
+                        </p>
+                        
+                        <div class="mc-card p-6 max-w-md mx-auto lg:mx-0">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="mc-font text-green-400">IP DO SERVIDOR</span>
+                                <span class="mc-badge animate-pulse-mc">ONLINE</span>
+                            </div>
+                            <button id="ipButton" class="mc-button w-full flex justify-between items-center p-3 clickable">
+                                <span class="mc-font-small" id="ip">jogar.pokehype.com.br</span>
+                                <span class="mc-font-small bg-green-600 px-3 py-1 rounded">COPIAR</span>
+                            </button>
+                        </div>
                     </div>
-                    <div class="w-full p-2 bg-cyan-600 bg-opacity-50 min-h-96 gap-4 flex flex-row justify-center items-start flex-wrap" id="contentItemsShop">
-                        <div class="loader rounded-full animate-spin bg-transparent border-b-4 border-b-cyan-500 w-8 h-8"></div>
+                    
+                    <div class="lg:w-1/2 flex justify-center">
+                        <div class="relative">
+                            <img src="./src/images/logo.png" alt="Logo PokeHype" class="w-64 md:w-80 h-auto rounded-full border-4 border-green-500 shadow-lg animate-float">
+                            <div class="absolute -bottom-4 -right-4 bg-green-600 text-white mc-font-small px-3 py-1 rounded-full">
+                                Pixelmon 8.4.3
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
+
+            <!-- Loja Section -->
+            <section class="container mx-auto px-4">
+                <div class="mc-container p-6">
+                    <div class="flex flex-col mb-6">
+                        <h3 class="mc-font text-2xl md:text-3xl text-white mb-4 text-center">
+                            Loja de Itens
+                        </h3>
+                        
+                        <!-- Categorias com scroll horizontal -->
+                        <div class="category-scroll" id="contentCategorysShop">
+                            <div class="loader rounded-full animate-spin bg-transparent border-b-4 border-b-green-500 w-8 h-8"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mc-divider"></div>
+                    
+                    <div id="contentItemsShop" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div class="loader rounded-full animate-spin bg-transparent border-b-4 border-b-green-500 w-8 h-8 mx-auto col-span-full"></div>
+                    </div>
+                </div>
+            </section>
         </div>
 
         <!-- Página Wiki -->
         <div id="contentWikiPage" class="w-full page-hidden">
-            <div class="bg-cyan-950 bg-opacity-80 min-w-full min-h-screen rounded-lg shadow-lg shadow-black mt-10 md:mt-0 p-2 md:p-4 flex flex-col md:flex-row justify-start items-start gap-4">
-                <div class="bg-black bg-opacity-30 w-full md:w-72 min-h-96 md:min-h-screen rounded-lg flex justify-center p-2 md:p-4 items-center flex-col gap-2" id="contentButtonsWiki">
-                    <!-- Conteúdo dos botões da página -->
-                </div>
-                <div class="flex justify-start items-center flex-col min-h-screen p-4 gap-6 w-full" id="contentContentWiki">
-                    <div id="titleContentWiki" class="font-'roboto' w-full text-center text-3xl md:text-5xl uppercase font-bold text-shadow text-cyan-50 p-4 bg-cyan-700 rounded-2xl shadow-lg shadow-black">
-                        <!-- Título da wiki -->
-                    </div>
-                    <div class="text-cyan-50 font-'roboto' w-full" id="contentGeneralWiki">
-                        <!-- Conteúdo geral da wiki -->
+            <div class="container mx-auto px-4">
+                <div class="mc-container p-6">
+                    <div class="flex flex-col lg:flex-row">
+                        <!-- Sidebar Wiki -->
+                        <div class="lg:w-1/4 mb-6 lg:mb-0 lg:mr-6">
+                            <div class="mc-card p-4">
+                                <h3 class="mc-font text-xl text-green-400 mb-4 text-center">Menu Wiki</h3>
+                                <div id="contentButtonsWiki" class="space-y-2 max-h-96 overflow-y-auto">
+                                    <!-- Botões da Wiki serão inseridos aqui -->
+                                    <div class="loader rounded-full animate-spin bg-transparent border-b-4 border-b-green-500 w-8 h-8 mx-auto"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Conteúdo Wiki -->
+                        <div class="lg:w-3/4">
+                            <div class="mc-card p-6">
+                                <div id="titleContentWiki" class="mc-font text-2xl md:text-3xl text-green-400 mb-6 text-center border-b-2 border-green-800 pb-3">
+                                    <!-- Título da página Wiki -->
+                                </div>
+                                <div id="contentGeneralWiki" class="prose prose-invert max-w-none">
+                                    <!-- Conteúdo da página Wiki -->
+                                    <p class="text-center text-gray-400 mc-font-small">Selecione uma categoria no menu para visualizar o conteúdo.</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -164,99 +349,116 @@
 
         <!-- Página Termos -->
         <div id="contentTermsPage" class="w-full page-hidden">
-            <div class="bg-cyan-950 bg-opacity-80 min-w-full min-h-screen rounded-lg shadow-lg shadow-black p-4 flex flex-col justify-center items-center gap-4">
-                <div class="bg-black bg-opacity-30 w-full max-w-4xl min-h-screen rounded-lg text-cyan-50">
-                    <h1 class="text-2xl md:text-4xl uppercase font-bold font-'roboto' text-shadow mb-4 text-center">Termos de Uso – PokeHype</h1>
-                    <p><em>Última atualização: 21 de abril de 2025</em></p>
+            <div class="container mx-auto px-4">
+                <div class="mc-container p-6 max-w-4xl mx-auto">
+                    <h1 class="mc-font text-3xl md:text-4xl text-green-400 mb-6 text-center">Termos de Uso – PokeHype</h1>
+                    <p class="text-center mb-8 text-gray-400 mc-font-small"><em>Última atualização: 21 de abril de 2025</em></p>
+                    
+                    <div class="mc-card p-6">
+                        <!-- Conteúdo dos termos (mantido igual) -->
+                        <section class="mb-8">
+                            <h2 class="mc-font text-xl text-green-400 mb-3">1. Natureza das Transações</h2>
+                            <p class="mb-4 text-gray-300 mc-font-small">1.1. Todas as compras realizadas na loja do PokeHype são classificadas como
+                                <strong class="text-green-300">doações voluntárias</strong> para o projeto, com o objetivo de apoiar financeiramente a
+                                manutenção, desenvolvimento e melhoria contínua do servidor.
+                            </p>
+                            <p class="mb-4 text-gray-300 mc-font-small">1.2. Os benefícios concedidos aos jogadores em troca dessas doações (itens, permissões,
+                                ranks, moedas virtuais etc.) são meramente <strong class="text-green-300">gratificações simbólicas</strong> e <strong class="text-green-300">não possuem
+                                    valor comercial ou monetário</strong> fora do ambiente virtual do servidor.</p>
+                        </section>
 
-                    <section class="mt-6">
-                        <h2 class="text-xl md:text-2xl font-'roboto' font-bold mt-6 mb-2">1. Natureza das Transações</h2>
-                        <p class="text-sm md:text-base mb-4 text-justify">1.1. Todas as compras realizadas na loja do PokeHype são classificadas como
-                            <strong class="text-cyan-300">doações voluntárias</strong> para o projeto, com o objetivo de apoiar financeiramente a
-                            manutenção, desenvolvimento e melhoria contínua do servidor.
-                        </p>
-                        <p class="text-sm md:text-base mb-4 text-justify">1.2. Os benefícios concedidos aos jogadores em troca dessas doações (itens, permissões,
-                            ranks, moedas virtuais etc.) são meramente <strong class="text-cyan-300">gratificações simbólicas</strong> e <strong class="text-cyan-300">não possuem
-                                valor comercial ou monetário</strong> fora do ambiente virtual do servidor.</p>
-                    </section>
+                        <!-- Restante do conteúdo dos termos -->
+                        <section class="mb-8">
+                            <h2 class="mc-font text-xl text-green-400 mb-3">2. Política de Reembolso</h2>
+                            <p class="mb-4 text-gray-300 mc-font-small">2.1. <strong class="text-green-300">Nenhuma compra é passível de reembolso</strong>, total ou parcial, em nenhuma
+                                circunstância, incluindo, mas não se limitando a:</p>
+                            <ul class="list-disc ml-6 mb-4 text-gray-300 mc-font-small">
+                                <li>Inserção incorreta do nickname (nome de usuário);</li>
+                                <li>Arrependimento após a compra;</li>
+                                <li>Compra duplicada ou não intencional;</li>
+                                <li>Incompatibilidade com versões do cliente ou problemas locais do jogador;</li>
+                                <li>Suspensão, banimento ou perda de acesso ao servidor por violação das regras.</li>
+                            </ul>
+                            <p class="mb-4 text-gray-300 mc-font-small">2.2. Ao confirmar uma doação, o usuário reconhece que está ciente e de acordo com essa
+                                política irreversível.</p>
+                        </section>
 
-                    <section>
-                        <h2 class="text-xl md:text-2xl font-'roboto' font-bold mt-6 mb-2">2. Política de Reembolso</h2>
-                        <p class="text-sm md:text-base mb-4 text-justify">2.1. <strong class="text-cyan-300">Nenhuma compra é passível de reembolso</strong>, total ou parcial, em nenhuma
-                            circunstância, incluindo, mas não se limitando a:</p>
-                        <ul class="list-disc ml-6 mb-4">
-                            <li>Inserção incorreta do nickname (nome de usuário);</li>
-                            <li>Arrependimento após a compra;</li>
-                            <li>Compra duplicada ou não intencional;</li>
-                            <li>Incompatibilidade com versões do cliente ou problemas locais do jogador;</li>
-                            <li>Suspensão, banimento ou perda de acesso ao servidor por violação das regras.</li>
-                        </ul>
-                        <p class="text-sm md:text-base mb-4 text-justify">2.2. Ao confirmar uma doação, o usuário reconhece que está ciente e de acordo com essa
-                            política irreversível.</p>
-                    </section>
+                        <section class="mb-8">
+                            <h2 class="mc-font text-xl text-green-400 mb-3">3. Responsabilidade do Usuário</h2>
+                            <p class="mb-4 text-gray-300 mc-font-small">3.1. É de inteira <strong class="text-green-300">responsabilidade do usuário</strong> fornecer corretamente os dados
+                                solicitados no momento da compra, especialmente o nickname (nome de usuário Minecraft).</p>
+                            <p class="mb-4 text-gray-300 mc-font-small">3.2. O PokeHype <strong class="text-green-300">não se responsabiliza por erros de digitação</strong>, informações
+                                inseridas de forma incorreta, ou por quaisquer consequências oriundas dessas falhas.</p>
+                            <p class="mb-4 text-gray-300 mc-font-small">3.3. Recomendamos revisar atentamente todos os dados antes de concluir a transação.</p>
+                        </section>
 
-                    <section>
-                        <h2 class="text-xl md:text-2xl font-'roboto' font-bold mt-6 mb-2">3. Responsabilidade do Usuário</h2>
-                        <p class="text-sm md:text-base mb-4 text-justify">3.1. É de inteira <strong class="text-cyan-300">responsabilidade do usuário</strong> fornecer corretamente os dados
-                            solicitados no momento da compra, especialmente o nickname (nome de usuário Minecraft).</p>
-                        <p class="text-sm md:text-base mb-4 text-justify">3.2. O PokeHype <strong class="text-cyan-300">não se responsabiliza por erros de digitação</strong>, informações
-                            inseridas de forma incorreta, ou por quaisquer consequências oriundas dessas falhas.</p>
-                        <p class="text-sm md:text-base mb-4 text-justify">3.3. Recomendamos revisar atentamente todos os dados antes de concluir a transação.</p>
-                    </section>
+                        <section class="mb-8">
+                            <h2 class="mc-font text-xl text-green-400 mb-3">4. Alterações nos Benefícios</h2>
+                            <p class="mb-4 text-gray-300 mc-font-small">4.1. O servidor reserva-se o direito de <strong class="text-green-300">alterar, remover ou modificar os benefícios</strong>
+                                oferecidos como resultado das doações a qualquer momento, sem aviso prévio, visando o
+                                equilíbrio da jogabilidade ou por motivos técnicos/estratégicos.</p>
+                        </section>
 
-                    <section>
-                        <h2 class="text-xl md:text-2xl font-'roboto' font-bold mt-6 mb-2">4. Alterações nos Benefícios</h2>
-                        <p class="text-sm md:text-base mb-4 text-justify">4.1. O servidor reserva-se o direito de <strong class="text-cyan-300">alterar, remover ou modificar os benefícios</strong>
-                            oferecidos como resultado das doações a qualquer momento, sem aviso prévio, visando o
-                            equilíbrio da jogabilidade ou por motivos técnicos/estratégicos.</p>
-                    </section>
+                        <section class="mb-8">
+                            <h2 class="mc-font text-xl text-green-400 mb-3">5. Conduta e Sanções</h2>
+                            <p class="mb-4 text-gray-300 mc-font-small">5.1. A doação <strong class="text-green-300">não isenta</strong> o jogador do cumprimento das regras do servidor. O
+                                descumprimento das normas poderá resultar em punições como <strong class="text-green-300">banimento temporário ou permanente</strong>, sem qualquer tipo de compensação ou restituição dos valores doados.
+                            </p>
+                        </section>
 
-                    <section>
-                        <h2 class="text-xl md:text-2xl font-'roboto' font-bold mt-6 mb-2">5. Conduta e Sanções</h2>
-                        <p class="text-sm md:text-base mb-4 text-justify">5.1. A doação <strong class="text-cyan-300">não isenta</strong> o jogador do cumprimento das regras do servidor. O
-                            descumprimento das normas poderá resultar em punições como <strong class="text-cyan-300">banimento temporário ou permanente</strong>, sem qualquer tipo de compensação ou restituição dos valores doados.
-                        </p>
-                    </section>
-
-                    <section>
-                        <h2 class="text-xl md:text-2xl font-'roboto' font-bold mt-6 mb-2">6. Disposições Gerais</h2>
-                        <p class="text-sm md:text-base mb-4 text-justify">6.1. Estes Termos de Uso poderão ser atualizados periodicamente. É responsabilidade do
-                            usuário manter-se informado sobre possíveis alterações.</p>
-                        <p class="text-sm md:text-base mb-4 text-justify">6.2. Ao concluir uma compra, o usuário <strong class="text-cyan-300">declara estar de acordo com todos os pontos aqui descritos</strong>, assumindo total responsabilidade pela transação realizada.</p>
-                    </section>
+                        <section class="mb-8">
+                            <h2 class="mc-font text-xl text-green-400 mb-3">6. Disposições Gerais</h2>
+                            <p class="mb-4 text-gray-300 mc-font-small">6.1. Estes Termos de Uso poderão ser atualizados periodicamente. É responsabilidade do
+                                usuário manter-se informado sobre possíveis alterações.</p>
+                            <p class="mb-4 text-gray-300 mc-font-small">6.2. Ao concluir uma compra, o usuário <strong class="text-green-300">declara estar de acordo com todos os pontos aqui descritos</strong>, assumindo total responsabilidade pela transação realizada.</p>
+                        </section>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="flex flex-col justify-center items-center gap-4 w-full bg-cyan-950 p-4">
-        <div class="flex flex-col md:flex-row justify-center items-start gap-6 w-full max-w-6xl">
-            <div class="w-full md:w-1/3 flex flex-col items-center gap-3 p-4 bg-cyan-900 bg-opacity-70 rounded-lg">
-                <h1 class="text-lg md:text-xl font-'Minecraft1' text-cyan-50 border-b-2 border-b-cyan-400 border-dashed pb-1 w-full text-center">acessibilidade</h1>
-                <a href="#" class="flex justify-center items-center gap-2 rounded-lg p-3 uppercase bg-cyan-800 flex-col md:flex-row w-full shadow-md shadow-black hover:brightness-90 transition-all duration-300" id="terms_button">
-                    <img src="./src/images/terms-and-conditions.png" alt="image of terms and conditions" class="w-5 h-auto invert">
-                    <p class="text-cyan-50 font-'Minecraft2'">termos e condicoes</p>
-                </a>
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t-4 border-green-600 py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div class="text-center md:text-left">
+                    <h3 class="mc-font text-green-400 mb-4">Acessibilidade</h3>
+                    <button id="terms_button" class="mc-button flex items-center justify-center md:justify-start mx-auto md:mx-0 px-4 py-2 clickable">
+                        <img src="./src/images/terms-and-conditions.png" alt="Termos" class="w-5 h-5 mr-2 invert">
+                        <span class="mc-font-small">Termos e Condições</span>
+                    </button>
+                </div>
+                
+                <div class="text-center">
+                    <h3 class="mc-font text-green-400 mb-4">Sobre Nós</h3>
+                    <p class="text-gray-300 mc-font-small">
+                        Criamos nosso servidor de Pixelmon em 2024 com um grande investimento em infraestrutura e desenvolvimento, 
+                        com o objetivo de inovar a comunidade e oferecer uma experiência de jogo única.
+                    </p>
+                </div>
+                
+                <div class="text-center md:text-right">
+                    <h3 class="mc-font text-green-400 mb-4">Redes Sociais</h3>
+                    <a href="https://discord.gg/RMd3mTtj6M" target="_blank" class="mc-button inline-flex items-center px-4 py-2 clickable">
+                        <img src="./src/images/discord.png" alt="Discord" class="w-5 h-5 mr-2 invert">
+                        <span class="mc-font-small">Discord</span>
+                    </a>
+                </div>
             </div>
-            <div class="w-full md:w-1/3 flex flex-col items-center gap-3 p-4 bg-cyan-900 bg-opacity-70 rounded-lg">
-                <h1 class="text-lg md:text-xl font-'Minecraft1' text-cyan-50 border-b-2 border-b-cyan-400 border-dashed pb-1 w-full text-center">sobre nos</h1>
-                <p class="font-'Minecraft2' text-cyan-50 text-sm md:text-base text-justify">Criamos nosso servidor de Pixelmon em 2024 com um grande investimento em infraestrutura e desenvolvimento, com o objetivo de inovar a comunidade e oferecer uma experiência de jogo única. Focamos em melhorar a jogabilidade, trazendo novas mecânicas, eventos emocionantes e uma otimização que garante uma experiência fluida e sem interrupções.</p>
+            
+            <div class="mc-divider"></div>
+            
+            <div class="text-center text-gray-400 mc-font-small">
+                <p class="mb-2">Copyright © PokeHype. Sem qualquer vínculo com Mojang Studios, Microsoft ou The Pokémon Company.</p>
+                <p>Desenvolvido por <a href="https://luandev.blog.br" target="_blank" class="text-green-400 hover:underline">LuanDev</a>.</p>
             </div>
-            <div class="w-full md:w-1/3 flex flex-col items-center gap-3 p-4 bg-cyan-900 bg-opacity-70 rounded-lg">
-                <h1 class="text-lg md:text-xl font-'Minecraft1' text-cyan-50 border-b-2 border-b-cyan-400 border-dashed pb-1 w-full text-center">redes sociais</h1>
-                <a href="https://discord.gg/RMd3mTtj6M" target="_blank" class="flex justify-center items-center gap-2 rounded-lg p-3 uppercase bg-cyan-800 flex-col md:flex-row w-full shadow-md shadow-black hover:brightness-90 transition-all duration-300">
-                    <img src="./src/images/discord.png" alt="discord icon image" class="w-5 h-auto invert">
-                    <p class="text-cyan-50 font-'Minecraft2'">discord</p>
-                </a>
-            </div>
-        </div>
-        <div class="text-cyan-50 text-center font-'Minecraft2' bg-cyan-950 brightness-75 p-4 rounded-xl shadow-lg shadow-black">
-            <p class="text-lg md:text-xl mb-2">Copyright © PokeHype. Sem qualquer vínculo com Mojang Studios, Microsoft ou The Pokémon Company.</p>
-            <p class="text-lg md:text-xl">Desenvolvido por <a href="https://luandev.blog.br" target="_blank" class="text-cyan-400">LuanDev</a>.</p>
         </div>
     </footer>
 
     <script>
+        const URL = "http://localhost:3000";
+
         // Variáveis globais
         let clickedIp = false;
         let pageSelected;
@@ -266,6 +468,7 @@
         let itemSelected;
         let confirm = false;
         let jsonWiki;
+        let quantity = 1;
 
         // Inicialização quando o DOM estiver carregado
         document.addEventListener("DOMContentLoaded", () => {
@@ -300,19 +503,12 @@
                     return;
                 }
 
-                // Seleção de categoria
-                if (element.classList.contains("button_category")) {
+                // Seleção de categoria - CORREÇÃO: agora funciona clicando em qualquer parte do botão
+                if (element.closest('.button_category')) {
                     e.preventDefault();
-                    if (element.classList.contains("category_selected")) return;
-                    
-                    document.querySelectorAll(".category_selected").forEach(el => {
-                        el.classList.remove("category_selected");
-                    });
-                    
-                    element.classList.add("category_selected");
-                    categorySelected = element;
-                    const categoryIndex = element.id.split("_")[1];
-                    onClickCategory(json["categorys"][categoryIndex]);
+                    const categoryButton = element.closest('.button_category');
+                    const categoryIndex = categoryButton.dataset.index;
+                    selectCategory(categoryIndex);
                     return;
                 }
                 
@@ -350,6 +546,25 @@
                     showShopPage();
                     return;
                 }
+
+                // Clicar em itens da loja - CORREÇÃO: agora funciona clicando em qualquer parte do card
+                if (element.closest('.mc-card') && element.closest('.mc-card').hasAttribute('data-item')) {
+                    e.preventDefault();
+                    const card = element.closest('.mc-card');
+                    const item = JSON.parse(card.dataset.item);
+                    if (item) {
+                        onClickItemShop(item);
+                    }
+                    return;
+                }
+
+                // Clicar em botões da wiki - CORREÇÃO: agora funciona clicando em qualquer parte do botão
+                if (element.closest('.buttonWiki')) {
+                    e.preventDefault();
+                    const wikiButton = element.closest('.buttonWiki');
+                    onClickButtonWiki(wikiButton);
+                    return;
+                }
             });
 
             // Escrevendo no campo do nick
@@ -368,12 +583,30 @@
             });
         }
 
+        // Selecionar categoria
+        function selectCategory(categoryIndex) {
+            // Remove a classe active de todas as categorias
+            document.querySelectorAll('.button_category').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Adiciona a classe active na categoria selecionada
+            const selectedBtn = document.querySelector(`[data-index="${categoryIndex}"]`);
+            if (selectedBtn) {
+                selectedBtn.classList.add('active');
+            }
+            
+            // Carrega os itens da categoria
+            categorySelected = categoryIndex;
+            onClickCategory(json["categorys"][categoryIndex]);
+        }
+
         // Atualizar categorias
         async function updateCategorys() {
             const contentCategorys = document.getElementById("contentCategorysShop");
             
             try {
-                const req = await fetch("https://pokehype.com.br:3001/config");
+                const req = await fetch(`${URL}/config`);
                 if (!req.ok) throw new Error("Falha na requisição");
                 
                 json = await req.json();
@@ -386,20 +619,19 @@
                     const iconPath = element["pathIcon"];
                     
                     const htmlCategory = `
-                        <a href="#" onclick="onClickCategory(event)" data-item="${i}" class="button_category ${i === 0 ? 'category_selected' : ''} transition-all duration-500 ease-in-out flex items-center justify-center gap-1 text-stone-50 uppercase flex-col flex-nowrap font-bold p-2 rounded-md text-lg md:text-2xl bg-cyan-700 w-full min-w-fit hover:bg-cyan-800 hover:brightness-75" id="category_${i}">
-                            <img src="https://pokehype.com.br:3001/image/${iconPath}" alt="${nameCategory}" class="w-5 md:w-6 h-auto">
-                            <p>${nameCategory}</p>
-                        </a>
+                        <button class="button_category mc-tab flex items-center px-4 py-2 clickable ${i === 0 ? 'active' : ''}" data-index="${i}">
+                            <img src="${URL}/image/${iconPath}" alt="${nameCategory}" class="w-5 h-5 mr-2">
+                            <span class="mc-font-small">${nameCategory}</span>
+                        </button>
                     `;
                     contentCategorys.innerHTML += htmlCategory;
                 });
 
                 if (contentCategorys.childElementCount > 0) {
-                    const firstElement = contentCategorys.querySelector(".button_category");
-                    categorySelected = firstElement;
-                    onClickCategory(json["categorys"][0]);
+                    // Seleciona a primeira categoria por padrão
+                    selectCategory(0);
                 } else {
-                    contentCategorys.innerHTML = `<div class="loader rounded-full animate-spin bg-transparent border-b-4 border-b-cyan-500 w-8 h-8"></div>`;
+                    contentCategorys.innerHTML = `<div class="loader rounded-full animate-spin bg-transparent border-b-4 border-b-green-500 w-8 h-8"></div>`;
                 }
             } catch (error) {
                 console.log("Não foi possível conectar às categorias da loja, tentando novamente...");
@@ -411,10 +643,16 @@
         function onClickCategory(category) {
             const contentItems = document.getElementById("contentItemsShop");
             
-            let delay = 0.3;
             contentItems.innerHTML = "";
             
-            category["items"].forEach(item => {
+            // Verifica se category é válido e tem items
+            if (!category || !category.items) {
+                console.error("Categoria inválida:", category);
+                contentItems.innerHTML = `<p class="text-gray-300 text-center col-span-full py-8 mc-font-small">Erro ao carregar itens</p>`;
+                return;
+            }
+            
+            category.items.forEach((item, index) => {
                 const title = item["title"];
                 const subtitle = item["subtitle"];
                 const description = item["description"];
@@ -423,32 +661,32 @@
                 const promotion = item["promotion"];
                 
                 const htmlItem = `
-                    <div class="minecraft-card relative flex justify-center items-center flex-col w-full max-w-xs gap-3 p-4 bg-cyan-900rounded-lg shadow-lg shadow-black transition-all duration-300 ease-in-out hover:brightness-110 hover:scale-105" style="animation: slideUp ${delay}s ease-in-out forwards;" onclick="onClickItemShop(event)" data-item='${JSON.stringify(item)}'>
-                        <img src="https://pokehype.com.br:3001/image/${iconPathItem}" alt="${title}" class="w-40 h-auto rounded-lg">
-                        <p class="font-'Minecraft' text-2xl md:text-3xl text-yellow-300 text-center">${title} ${subtitle}</p>
-                        <div class="flex justify-center items-center gap-2 flex-col md:flex-row">
-                            ${promotion ? `<p class="font-'Minecraft' text-lg line-through text-yellow-200">R$ ${(price*2).toFixed(2)}</p>` : ''}
-                            <p class="font-'Minecraft' text-2xl text-yellow-400">R$ ${price}</p>
+                    <div class="mc-card p-4 flex flex-col h-full clickable" data-item='${JSON.stringify(item).replace(/'/g, "&#39;")}'>
+                        <div class="flex justify-center mb-4">
+                            <img src="${URL}/image/${iconPathItem}" alt="${title}" class="w-24 h-24 object-contain">
                         </div>
-                        <p class="font-'Minecraft' text-green-400 text-lg text-center">${subtitle}</p>
-                        <div class="minecraft-card-button flex w-full justify-center items-center gap-2 p-3 rounded-full bg-cyan-700 hover:bg-cyan-800 transition-all duration-300">
-                            <img src="./src/images/shopping_cart.png" alt="cart icon" class="w-5 h-auto invert">
-                            <p class="font-'Minecraft' text-lg uppercase text-stone-50">comprar</p>
+                        <h4 class="mc-font text-lg text-white mb-2 text-center">${title}</h4>
+                        <p class="text-green-300 text-center mb-3 mc-font-small">${subtitle}</p>
+                        
+                        <div class="flex justify-center items-center mb-4">
+                            ${promotion ? `<span class="mc-font text-red-400 line-through mr-2">R$ ${(price*2).toFixed(2)}</span>` : ''}
+                            <span class="mc-font text-yellow-400 text-xl">R$ ${price}</span>
                         </div>
-                        <div class="minecraft-card-description absolute hidden top-full mt-2 z-10 w-full p-4 rounded-lg bg-cyan-950 text-cyan-50 font-'Minecraft2' text-sm lowercase">
-                            ${description}
-                        </div>
+                        
+                        <p class="text-gray-400 text-sm mb-4 flex-grow text-center mc-font-small">${description}</p>
+                        
+                        <button class="mc-button w-full flex items-center justify-center py-2 mt-auto clickable">
+                            <img src="./src/images/shopping_cart.png" alt="Comprar" class="w-5 h-5 mr-2 invert">
+                            <span class="mc-font-small">Comprar Agora</span>
+                        </button>
                     </div>
                 `;
                 contentItems.innerHTML += htmlItem;
-                delay += 0.1;
             });
         }
 
-        // Ao clicar em um item da loja
-        function onClickItemShop(event) {
-            const target = event.currentTarget;
-            const item = JSON.parse(target.dataset.item);
+        // Ao clicar em um item da loja - CORREÇÃO: função modificada para receber o item diretamente
+        function onClickItemShop(item) {
             if (!item) return;
             
             // Salva o conteúdo atual da página
@@ -467,60 +705,70 @@
             const price = item["price"];
             
             const modalHtml = `
-                <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-70">
-                    <div class="bg-cyan-900 rounded-lg shadow-2xl shadow-black w-full max-w-4xl overflow-y-auto">
-                        <div class="flex justify-between items-center p-4 border-b border-cyan-700">
-                            <h2 class="text-2xl font-bold text-cyan-50">Comprar ${title}</h2>
-                            <button class="text-cyan-50 hover:text-cyan-300 text-2xl" id="buttonBack">&times;</button>
+                <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-80">
+                    <div class="mc-container w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+                        <div class="flex justify-between items-center p-4 border-b border-gray-700">
+                            <h2 class="mc-font text-2xl text-green-400">Comprar ${title}</h2>
+                            <button class="text-gray-400 hover:text-white text-2xl clickable" id="buttonBack">&times;</button>
                         </div>
-                        <div class="p-4">
-                            <div class="flex flex-col md:flex-row gap-6">
+                        <div class="p-6">
+                            <div class="flex flex-col lg:flex-row gap-6 mb-6">
                                 <!-- Informações do produto -->
-                                <div class="w-full md:w-1/2 bg-cyan-800 rounded-lg p-4">
-                                    <img src="https://pokehype.com.br:3001/image/${iconPathItem}" alt="${title}" class="w-32 h-auto mx-auto mb-4">
-                                    <h3 class="text-cyan-50 font-bold text-xl text-center mb-2">${title} ${subtitle}</h3>
-                                    <div class="text-cyan-300 text-center text-lg mb-4" id="priceDiv">R$ ${price}</div>
-                                    <p class="text-cyan-50 text-sm">${description}</p>
+                                <div class="lg:w-2/5">
+                                    <div class="mc-card p-4 flex flex-col items-center text-center">
+                                        <img src="${URL}/image/${iconPathItem}" alt="${title}" class="w-32 h-32 mb-4">
+                                        <h3 class="mc-font text-xl text-white mb-2">${title}</h3>
+                                        <p class="text-green-300 mb-4 mc-font-small">${subtitle}</p>
+                                        <div class="mc-font text-2xl text-yellow-400 mb-4" id="priceDiv">R$ ${price}</div>
+                                        <p class="text-gray-300 text-sm mc-font-small">${description}</p>
+                                    </div>
                                 </div>
                                 
                                 <!-- Formulário de compra -->
-                                <div class="w-full md:w-1/2 bg-cyan-800 rounded-lg p-4">
-                                    <div class="mb-4">
-                                        <label for="inputNick" class="block text-cyan-50 mb-2">Nickname <span class="text-red-500">*</span></label>
-                                        <input type="text" id="inputNick" class="w-full p-2 bg-cyan-900 text-cyan-50 rounded border border-cyan-700" placeholder="Ex: lHawk_" maxlength="16">
-                                    </div>
-                                    
-                                    <div class="mb-4">
-                                        <label class="block text-cyan-50 mb-2">Quantidade</label>
-                                        <div class="flex items-center gap-2">
-                                            <button id="minus" class="bg-cyan-700 text-cyan-50 p-2 rounded hover:bg-cyan-600">-</button>
-                                            <div id="inputQuantity" class="bg-cyan-900 text-cyan-50 p-2 min-w-12 text-center">1</div>
-                                            <button id="plus" class="bg-cyan-700 text-cyan-50 p-2 rounded hover:bg-cyan-600">+</button>
+                                <div class="lg:w-3/5">
+                                    <div class="mc-card p-4">
+                                        <h3 class="mc-font text-xl text-green-400 mb-4">Informações da Compra</h3>
+                                        
+                                        <div class="mb-4">
+                                            <label for="inputNick" class="block text-gray-300 mb-2 mc-font-small">Nickname no Minecraft <span class="text-red-500">*</span></label>
+                                            <input type="text" id="inputNick" class="mc-input w-full" placeholder="Ex: lHawk_" maxlength="16">
                                         </div>
+                                        
+                                        <div class="mb-6">
+                                            <label class="block text-gray-300 mb-2 mc-font-small">Quantidade</label>
+                                            <div class="flex items-center justify-between max-w-xs">
+                                                <button id="minus" class="mc-button w-10 h-10 flex items-center justify-center text-lg clickable">-</button>
+                                                <div id="inputQuantity" class="mc-font text-xl mx-4 w-12 text-center">1</div>
+                                                <button id="plus" class="mc-button w-10 h-10 flex items-center justify-center text-lg clickable">+</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <button id="confirmBuyButton" class="mc-button w-full flex items-center justify-center py-3 text-lg clickable">
+                                            <img src="./src/images/check.png" alt="Confirmar" class="w-6 h-6 mr-2 invert">
+                                            <span class="mc-font">Confirmar Compra</span>
+                                        </button>
                                     </div>
                                     
-                                    <button id="confirmBuyButton" class="w-full bg-green-700 text-cyan-50 p-3 rounded-lg hover:bg-green-600 flex items-center justify-center gap-2">
-                                        <img src="./src/images/check.png" alt="Confirmar" class="w-5 h-auto invert">
-                                        Confirmar Compra
-                                    </button>
-                                </div>
-                                
-                                <!-- Preview do jogador -->
-                                <div class="w-full md:w-1/3 bg-cyan-800 rounded-lg p-4 flex flex-col items-center">
-                                    <img src="https://mc-heads.net/player/" alt="Player Skin" class="w-32 h-auto" id="playerOfNick">
-                                    <p class="text-cyan-50 mt-2 text-center">Preview do seu personagem</p>
+                                    <!-- Preview do jogador -->
+                                    <div class="mc-card p-4 mt-4 flex flex-col items-center">
+                                        <img src="https://mc-heads.net/player/" alt="Player Skin" class="w-32 h-auto mb-2" id="playerOfNick">
+                                        <p class="text-gray-300 mc-font-small text-center">Preview do seu personagem</p>
+                                    </div>
                                 </div>
                             </div>
                             
                             <!-- Aviso importante -->
-                            <div class="mt-6 bg-red-900 bg-opacity-50 rounded-lg p-4 text-cyan-50 text-sm">
-                                <div class="flex items-start gap-2">
-                                    <img src="./src/images/warning.png" alt="Aviso" class="w-5 h-auto invert mt-1">
+                            <div class="mc-card p-4 bg-red-900 bg-opacity-30 border-red-700">
+                                <div class="flex items-start">
+                                    <img src="./src/images/warning.png" alt="Aviso" class="w-6 h-6 mr-3 mt-1 invert">
                                     <div>
-                                        <span class="font-bold text-red-300">OBS:</span> Ao comprar o produto, você concorda automaticamente com nossos 
-                                        <a href="#" class="text-green-300" onclick="showTermsPage()">termos e condições</a>. 
-                                        Após o pagamento, você deverá entrar em nosso servidor com o nick selecionado e executar o comando 
-                                        <span class="text-green-400">/CaixaPostal</span> para verificar o status do pagamento e resgatar suas compras.
+                                        <span class="font-bold text-red-300 mc-font-small">ATENÇÃO:</span>
+                                        <p class="text-gray-300 mc-font-small mt-1">
+                                            Ao comprar o produto, você concorda automaticamente com nossos 
+                                            <a href="#" class="text-green-300 hover:underline clickable" onclick="showTermsPage()">termos e condições</a>. 
+                                            Após o pagamento, você deverá entrar em nosso servidor com o nick selecionado e executar o comando 
+                                            <span class="text-green-400 mc-font-small">/CaixaPostal</span> para verificar o status do pagamento e resgatar suas compras.
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -538,13 +786,14 @@
             setupEventListeners();
         }
 
-        // Atualizar quantidade
+        // Atualizar quantidade - CORRIGIDO: agora adiciona de 1 em 1
         function updateQuantity(change) {
             const inputQuantity = document.getElementById("inputQuantity");
             if (!inputQuantity) return;
             
             let currentQuantity = parseInt(inputQuantity.textContent);
             
+            // CORREÇÃO: Agora adiciona/subtrai apenas 1 unidade
             quantity = currentQuantity + change;
             quantity = Math.max(1, Math.min(10, quantity)); // Limita entre 1 e 10
             
@@ -570,17 +819,29 @@
             const ipToCopy = originalText.replace('IP:', '').trim();
             
             navigator.clipboard.writeText(ipToCopy).then(() => {
-                ipElement.innerHTML = `<span class='text-green-400'>IP copiado com sucesso!</span>`;
+                const button = document.getElementById("ipButton");
+                const originalHTML = button.innerHTML;
+                
+                button.innerHTML = `
+                    <span class="mc-font-small text-green-300">IP COPIADO!</span>
+                    <span class="mc-font-small bg-green-700 px-3 py-1 rounded">✓</span>
+                `;
                 
                 setTimeout(() => {
-                    ipElement.textContent = originalText;
+                    button.innerHTML = originalHTML;
                     clickedIp = false;
                 }, 1500);
             }).catch((err) => {
-                ipElement.textContent = 'Erro ao copiar!';
+                const button = document.getElementById("ipButton");
+                const originalHTML = button.innerHTML;
+                
+                button.innerHTML = `
+                    <span class="mc-font-small text-red-300">ERRO AO COPIAR</span>
+                    <span class="mc-font-small bg-red-700 px-3 py-1 rounded">✗</span>
+                `;
                 
                 setTimeout(() => {
-                    ipElement.textContent = originalText;
+                    button.innerHTML = originalHTML;
                     clickedIp = false;
                 }, 1500);
             });
@@ -619,7 +880,7 @@
             if (!button) return;
             
             const originalContent = button.innerHTML;
-            button.innerHTML = `<div class="loader rounded-full animate-spin bg-transparent border-b-4 border-b-cyan-500 w-8 h-8"></div>`;
+            button.innerHTML = `<div class="loader rounded-full animate-spin bg-transparent border-b-4 border-b-green-500 w-8 h-8"></div>`;
             button.disabled = true;
             
             const item = itemSelected;
@@ -642,7 +903,7 @@
             }
             
             try {
-                const req = await fetch("https://pokehype.com.br:3001/payment", {
+                const req = await fetch(`${URL}/payment`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -651,7 +912,7 @@
                         nick: nick,
                         title: title,
                         description: title + ", " + subtitle + ". " + description,
-                        pictureUrl: "https://pokehype.com.br:3001/image/" + iconPathItem,
+                        pictureUrl: `${URL}/image/${iconPathItem}`,
                         unit_price: Number(price).toFixed(2),
                         quantity: quantity,
                         itemIndex: itemIndex,
@@ -722,7 +983,7 @@
         // Carregar dados da wiki
         async function loadWikiData() {
             try {
-                const req = await fetch("https://pokehype.com.br:3001/wiki");
+                const req = await fetch(`${URL}/wiki`);
                 const json = await req.json();
                 if (!json) return;
                 jsonWiki = json;
@@ -737,10 +998,10 @@
                     let contentHtml = element["content"];
                     
                     const htmlButton = `
-                        <a href="#" onclick="onClickButtonWiki(event)" data-item="${index}" class="buttonWiki w-full md:min-w-[10rem] min-w-[4rem] h-[4rem] bg-cyan-700 rounded-lg md:rounded-full shadow-black shadow-md flex justify-center items-center gap-1 text-cyan-50 uppercase flex-col md:flex-row font-bold p-2 md:p-4" id="buttonWiki_${index}">
-                            <img src="https://pokehype.com.br:3001/image/${iconPath}" alt="${name} icon" class="w-4 md:w-6 h-auto">
-                            <p>${title}</p>
-                        </a>
+                        <button class="buttonWiki mc-button w-full flex items-center justify-start p-3 mb-2 clickable ${index === 0 ? 'active' : ''}" data-item="${index}" id="buttonWiki_${index}">
+                            <img src="${URL}/image/${iconPath}" alt="${name} icon" class="w-5 h-5 mr-3">
+                            <span class="mc-font-small">${title}</span>
+                        </button>
                     `;
                     contentButtons.innerHTML += htmlButton;
                     index++;
@@ -749,10 +1010,10 @@
                 if (contentButtons.childElementCount > 0) {
                     const firstElement = contentButtons.querySelector(".buttonWiki");
                     if (firstElement) {
-                        firstElement.click();
+                        onClickButtonWiki(firstElement);
                     }
                 } else {
-                    contentButtons.innerHTML = `<div class="loader rounded-full animate-spin bg-transparent border-b-4 border-b-cyan-500 w-8 h-8"></div>`;
+                    contentButtons.innerHTML = `<div class="loader rounded-full animate-spin bg-transparent border-b-4 border-b-green-500 w-8 h-8 mx-auto"></div>`;
                 }
             } catch (error) {
                 console.log("Não foi possível conectar à wiki, tentando novamente...");
@@ -760,17 +1021,16 @@
             }
         }
 
-        // Ao clicar em um botão da wiki
-        function onClickButtonWiki(event) {
-            const target = event.currentTarget;
-            if (!target.classList.contains("buttonWiki")) return;
-            if (target.classList.contains("selectedButtonWiki")) return;
-            resetButtonsWiki();
-
-            window.scrollTo(0, 0);
-
-            target.classList.add("selectedButtonWiki");
-            const element = jsonWiki["pages"][target.dataset.item];
+        // Ao clicar em um botão da wiki - CORREÇÃO: função modificada para receber o elemento diretamente
+        function onClickButtonWiki(buttonElement) {
+            if (!buttonElement.classList.contains("buttonWiki")) return;
+            
+            document.querySelectorAll(".buttonWiki").forEach(button => {
+                button.classList.remove("active");
+            });
+            
+            buttonElement.classList.add("active");
+            const element = jsonWiki["pages"][buttonElement.dataset.item];
             const title = element["title"];
 
             // setando o titulo da pagina.
@@ -780,13 +1040,6 @@
             // setando o conteúdo da pagina.
             const content = document.getElementById("contentGeneralWiki");
             content.innerHTML = element["content"];
-        }
-
-        // Resetar botões da wiki
-        function resetButtonsWiki(){
-            document.querySelectorAll(".buttonWiki").forEach(button => {
-                button.classList.remove("selectedButtonWiki");
-            });
         }
     </script>
 </body>
