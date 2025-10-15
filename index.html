@@ -222,6 +222,67 @@
             cursor: pointer;
             user-select: none;
         }
+
+        /* Estilos para subcategorias com dropdown - CORRIGIDO */
+        .category-with-dropdown {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+        }
+
+        .dropdown-arrow {
+            transition: transform 0.3s ease;
+            margin-left: 8px;
+        }
+
+        .category-with-dropdown.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .subcategory-dropdown {
+            width: 100%;
+            background: rgba(30, 30, 30, 0.98);
+            border: 2px solid #5a5a5a;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+        }
+
+        .category-with-dropdown.active .subcategory-dropdown {
+            display: flex;
+        }
+
+        .subcategory-tab {
+            background: rgba(40, 40, 40, 0.9);
+            border: none;
+            border-bottom: 1px solid #5a5a5a;
+            padding: 10px 12px;
+            text-align: left;
+            transition: all 0.2s ease;
+            color: var(--mc-light);
+            cursor: pointer;
+            font-family: 'Silkscreen', 'Courier New', monospace;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        .subcategory-tab:last-child {
+            border-bottom: none;
+        }
+
+        .subcategory-tab:hover {
+            background: rgba(60, 60, 60, 0.9);
+        }
+
+        .subcategory-tab.active {
+            background: rgba(80, 200, 120, 0.9);
+            color: white;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body class="grid-pattern">
@@ -364,7 +425,7 @@
                             </p>
                             <p class="mb-4 text-gray-300 mc-font-small">1.2. Os benefícios concedidos aos jogadores em troca dessas doações (itens, permissões,
                                 ranks, moedas virtuais etc.) são meramente <strong class="text-green-300">gratificações simbólicas</strong> e <strong class="text-green-300">não possuem
-                                    valor comercial ou monetário</strong> fora do ambiente virtual do servidor.</p>
+                                    valor comercial ou monetário</strong> fuera do ambiente virtual do servidor.</p>
                         </section>
 
                         <!-- Restante do conteúdo dos termos -->
@@ -396,7 +457,7 @@
                             <h2 class="mc-font text-xl text-green-400 mb-3">4. Alterações nos Benefícios</h2>
                             <p class="mb-4 text-gray-300 mc-font-small">4.1. O servidor reserva-se o direito de <strong class="text-green-300">alterar, remover ou modificar os benefícios</strong>
                                 oferecidos como resultado das doações a qualquer momento, sem aviso prévio, visando o
-                                equilíbrio da jogabilidade ou por motivos técnicos/estratégicos.</p>
+                                equilíbria da jogabilidade ou por motivos técnicos/estratégicos.</p>
                         </section>
 
                         <section class="mb-8">
@@ -469,6 +530,8 @@
         let confirm = false;
         let jsonWiki;
         let quantity = 1;
+        let currentMainCategory = null;
+        let currentSubcategory = null;
 
         // Inicialização quando o DOM estiver carregado
         document.addEventListener("DOMContentLoaded", () => {
@@ -503,12 +566,30 @@
                     return;
                 }
 
-                // Seleção de categoria - CORREÇÃO: agora funciona clicando em qualquer parte do botão
+                // Seleção de categoria principal
                 if (element.closest('.button_category')) {
                     e.preventDefault();
                     const categoryButton = element.closest('.button_category');
                     const categoryIndex = categoryButton.dataset.index;
-                    selectCategory(categoryIndex);
+                    const categoryContainer = categoryButton.closest('.category-with-dropdown');
+                    const hasSubcategories = categoryContainer.querySelector('.subcategory-dropdown');
+                    
+                    if (hasSubcategories) {
+                        // Se tem subcategorias, alterna o dropdown
+                        toggleCategoryDropdown(categoryContainer);
+                    } else {
+                        // Se não tem subcategorias, seleciona diretamente
+                        selectMainCategory(categoryIndex);
+                    }
+                    return;
+                }
+                
+                // Seleção de subcategoria
+                if (element.closest('.subcategory-tab')) {
+                    e.preventDefault();
+                    const subcategoryButton = element.closest('.subcategory-tab');
+                    const subcategoryIndex = subcategoryButton.dataset.subindex;
+                    selectSubcategory(subcategoryIndex);
                     return;
                 }
                 
@@ -547,7 +628,7 @@
                     return;
                 }
 
-                // Clicar em itens da loja - CORREÇÃO: agora funciona clicando em qualquer parte do card
+                // Clicar em itens da loja
                 if (element.closest('.mc-card') && element.closest('.mc-card').hasAttribute('data-item')) {
                     e.preventDefault();
                     const card = element.closest('.mc-card');
@@ -558,12 +639,19 @@
                     return;
                 }
 
-                // Clicar em botões da wiki - CORREÇÃO: agora funciona clicando em qualquer parte do botão
+                // Clicar em botões da wiki
                 if (element.closest('.buttonWiki')) {
                     e.preventDefault();
                     const wikiButton = element.closest('.buttonWiki');
                     onClickButtonWiki(wikiButton);
                     return;
+                }
+                
+                // Fechar dropdowns ao clicar fora
+                if (!element.closest('.category-with-dropdown')) {
+                    document.querySelectorAll('.category-with-dropdown').forEach(cat => {
+                        cat.classList.remove('active');
+                    });
                 }
             });
 
@@ -583,25 +671,67 @@
             });
         }
 
-        // Selecionar categoria
-        function selectCategory(categoryIndex) {
-            // Remove a classe active de todas as categorias
+        // Alternar dropdown da categoria - CORRIGIDO
+        function toggleCategoryDropdown(categoryContainer) {
+            const isActive = categoryContainer.classList.contains('active');
+            
+            // Fecha todos os dropdowns
+            document.querySelectorAll('.category-with-dropdown').forEach(cat => {
+                cat.classList.remove('active');
+            });
+            
+            // Se não estava ativo, abre este
+            if (!isActive) {
+                categoryContainer.classList.add('active');
+            }
+        }
+
+        // Selecionar categoria principal
+        function selectMainCategory(categoryIndex) {
+            // Remove a classe active de todas as categorias principais
             document.querySelectorAll('.button_category').forEach(btn => {
                 btn.classList.remove('active');
             });
             
-            // Adiciona a classe active na categoria selecionada
+            // Adiciona a classe active na categoria principal selecionada
             const selectedBtn = document.querySelector(`[data-index="${categoryIndex}"]`);
             if (selectedBtn) {
                 selectedBtn.classList.add('active');
             }
             
+            // Fecha todos os dropdowns
+            document.querySelectorAll('.category-with-dropdown').forEach(cat => {
+                cat.classList.remove('active');
+            });
+            
             // Carrega os itens da categoria
-            categorySelected = categoryIndex;
+            currentMainCategory = categoryIndex;
+            currentSubcategory = null;
             onClickCategory(json["categorys"][categoryIndex]);
         }
 
-        // Atualizar categorias
+        // Selecionar subcategoria
+        function selectSubcategory(subcategoryIndex) {
+            // Remove a classe active de todas as subcategorias
+            document.querySelectorAll('.subcategory-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Adiciona a classe active na subcategoria selecionada
+            const selectedTab = document.querySelector(`[data-subindex="${subcategoryIndex}"]`);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+            
+            // Fecha o dropdown
+            selectedTab.closest('.category-with-dropdown').classList.remove('active');
+            
+            // Carrega os itens da subcategoria
+            currentSubcategory = subcategoryIndex;
+            onClickCategory(json["categorys"][subcategoryIndex]);
+        }
+
+        // Atualizar categorias - CORRIGIDO
         async function updateCategorys() {
             const contentCategorys = document.getElementById("contentCategorysShop");
             
@@ -614,22 +744,100 @@
                 
                 contentCategorys.innerHTML = "";
                 
+                // Organizar categorias por grupos (categorias principais e subcategorias)
+                const mainCategories = [];
+                
                 json["categorys"].forEach((element, i) => {
                     const nameCategory = element["name"];
-                    const iconPath = element["pathIcon"];
+                    
+                    // Verifica se é uma subcategoria (contém "_")
+                    if (nameCategory.includes("_")) {
+                        const parts = nameCategory.split("_");
+                        const mainCategoryName = parts[0];
+                        const subcategoryName = parts[1];
+                        
+                        // Verifica se já existe a categoria principal
+                        let mainCategoryIndex = mainCategories.findIndex(cat => cat.name === mainCategoryName);
+                        
+                        if (mainCategoryIndex === -1) {
+                            // Cria nova categoria principal
+                            mainCategories.push({
+                                name: mainCategoryName,
+                                pathIcon: element["pathIcon"],
+                                index: i,
+                                subcategories: [{
+                                    name: subcategoryName,
+                                    originalIndex: i,
+                                    pathIcon: element["pathIcon"]
+                                }]
+                            });
+                        } else {
+                            // Adiciona subcategoria à categoria principal existente
+                            mainCategories[mainCategoryIndex].subcategories.push({
+                                name: subcategoryName,
+                                originalIndex: i,
+                                pathIcon: element["pathIcon"]
+                            });
+                        }
+                    } else {
+                        // É uma categoria principal sem subcategorias
+                        mainCategories.push({
+                            name: nameCategory,
+                            pathIcon: element["pathIcon"],
+                            index: i,
+                            subcategories: []
+                        });
+                    }
+                });
+                
+                // Renderizar categorias principais
+                mainCategories.forEach((mainCategory, i) => {
+                    const hasSubcategories = mainCategory.subcategories.length > 0;
                     
                     const htmlCategory = `
-                        <button class="button_category mc-tab flex items-center px-4 py-2 clickable ${i === 0 ? 'active' : ''}" data-index="${i}">
-                            <img src="${URL}/image/${iconPath}" alt="${nameCategory}" class="w-5 h-5 mr-2">
-                            <span class="mc-font-small">${nameCategory}</span>
-                        </button>
+                        <div class="category-with-dropdown">
+                            <button class="button_category mc-tab flex items-center px-4 py-2 clickable ${i === 0 && !hasSubcategories ? 'active' : ''}" 
+                                    data-index="${mainCategory.index}">
+                                <img src="${URL}/image/${mainCategory.pathIcon}" alt="${mainCategory.name}" class="w-5 h-5 mr-2">
+                                <span class="mc-font-small">${mainCategory.name}</span>
+                                ${hasSubcategories ? `
+                                    <svg class="dropdown-arrow w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                ` : ''}
+                            </button>
+                            
+                            ${hasSubcategories ? `
+                                <div class="subcategory-dropdown">
+                                    ${mainCategory.subcategories.map((sub, j) => `
+                                        <button class="subcategory-tab flex items-center px-3 py-2 clickable ${j === 0 ? 'active' : ''}" 
+                                                data-subindex="${sub.originalIndex}">
+                                            <span class="mc-font-small">${sub.name}</span>
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
                     `;
                     contentCategorys.innerHTML += htmlCategory;
                 });
 
                 if (contentCategorys.childElementCount > 0) {
                     // Seleciona a primeira categoria por padrão
-                    selectCategory(0);
+                    const firstCategory = contentCategorys.querySelector('.button_category');
+                    if (firstCategory) {
+                        const hasSubcategories = firstCategory.closest('.category-with-dropdown').querySelector('.subcategory-dropdown');
+                        
+                        if (!hasSubcategories) {
+                            selectMainCategory(firstCategory.dataset.index);
+                        } else {
+                            // Se tem subcategorias, seleciona a primeira subcategoria
+                            const firstSubcategory = hasSubcategories.querySelector('.subcategory-tab');
+                            if (firstSubcategory) {
+                                selectSubcategory(firstSubcategory.dataset.subindex);
+                            }
+                        }
+                    }
                 } else {
                     contentCategorys.innerHTML = `<div class="loader rounded-full animate-spin bg-transparent border-b-4 border-b-green-500 w-8 h-8"></div>`;
                 }
@@ -685,7 +893,7 @@
             });
         }
 
-        // Ao clicar em um item da loja - CORREÇÃO: função modificada para receber o item diretamente
+        // Ao clicar em um item da loja
         function onClickItemShop(item) {
             if (!item) return;
             
@@ -786,18 +994,16 @@
             setupEventListeners();
         }
 
-        // Atualizar quantidade - CORRIGIDO: agora adiciona de 1 em 1
+        // Atualizar quantidade - CORREÇÃO FINAL
         function updateQuantity(change) {
-            const inputQuantity = document.getElementById("inputQuantity");
-            if (!inputQuantity) return;
-            
-            let currentQuantity = parseInt(inputQuantity.textContent);
-            
-            // CORREÇÃO: Agora adiciona/subtrai apenas 1 unidade
-            quantity = currentQuantity + change;
+            // CORREÇÃO: Usa a variável global quantity diretamente
+            quantity += change;
             quantity = Math.max(1, Math.min(10, quantity)); // Limita entre 1 e 10
             
-            inputQuantity.textContent = quantity;
+            const inputQuantity = document.getElementById("inputQuantity");
+            if (inputQuantity) {
+                inputQuantity.textContent = quantity;
+            }
             updatePriceItem();
         }
 
@@ -1021,7 +1227,7 @@
             }
         }
 
-        // Ao clicar em um botão da wiki - CORREÇÃO: função modificada para receber o elemento diretamente
+        // Ao clicar em um botão da wiki
         function onClickButtonWiki(buttonElement) {
             if (!buttonElement.classList.contains("buttonWiki")) return;
             
