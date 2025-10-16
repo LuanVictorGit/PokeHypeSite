@@ -247,7 +247,7 @@
             border-top: none;
             border-radius: 0 0 6px 6px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            z-index: 100;
+            z-index: 1000;
             display: none;
             flex-direction: column;
         }
@@ -283,6 +283,38 @@
             color: white;
             font-weight: bold;
         }
+
+        /* Modal styles - CORRIGIDO */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(20, 20, 20, 0.95);
+            border: 2px solid #444;
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            width: 100%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            z-index: 10000;
+        }
     </style>
 </head>
 <body class="grid-pattern">
@@ -310,6 +342,13 @@
             </div>
         </div>
     </header>
+
+    <!-- Modal de Compra -->
+    <div id="purchaseModal" class="modal-overlay">
+        <div class="modal-content">
+            <!-- Conteúdo do modal será inserido aqui via JavaScript -->
+        </div>
+    </div>
 
     <main class="pt-24 pb-16 min-h-screen">
         <!-- Página Principal -->
@@ -522,14 +561,10 @@
 
         // Variáveis globais
         let clickedIp = false;
-        let pageSelected;
         let json;
-        let categorySelected;
-        let htmlBody;
         let itemSelected;
         let confirm = false;
         let jsonWiki;
-        let quantity = 1;
         let currentMainCategory = null;
         let currentSubcategory = null;
 
@@ -542,143 +577,42 @@
 
         // Configuração de eventos
         function setupEventListeners() {
-            document.addEventListener("click", (e) => {
-                const element = e.target;
-                
-                // Botão de copiar IP
-                if (element.closest('#ipButton')) {
-                    e.preventDefault();
-                    copyIpToClipboard();
-                    return;
-                }
-                
-                // Botão de aumentar quantidade
-                if (element.id === "plus") {
-                    e.preventDefault();
-                    updateQuantity(1);
-                    return;
-                }
+            // Botão de copiar IP
+            document.getElementById('ipButton')?.addEventListener('click', copyIpToClipboard);
+            
+            // Links de navegação
+            document.getElementById('terms_button')?.addEventListener('click', showTermsPage);
+            document.getElementById('wiki_button')?.addEventListener('click', showWikiPage);
+            document.getElementById('shop_button')?.addEventListener('click', showShopPage);
 
-                // Botão de diminuir quantidade
-                if (element.id === "minus") {
-                    e.preventDefault();
-                    updateQuantity(-1);
-                    return;
-                }
-
-                // Seleção de categoria principal
-                if (element.closest('.button_category')) {
-                    e.preventDefault();
-                    const categoryButton = element.closest('.button_category');
-                    const categoryIndex = categoryButton.dataset.index;
-                    const categoryContainer = categoryButton.closest('.category-with-dropdown');
-                    const hasSubcategories = categoryContainer.querySelector('.subcategory-dropdown');
-                    
-                    if (hasSubcategories) {
-                        // Se tem subcategorias, alterna o dropdown
-                        toggleCategoryDropdown(categoryContainer);
-                    } else {
-                        // Se não tem subcategorias, seleciona diretamente
-                        selectMainCategory(categoryIndex);
-                    }
-                    return;
-                }
-                
-                // Seleção de subcategoria
-                if (element.closest('.subcategory-tab')) {
-                    e.preventDefault();
-                    const subcategoryButton = element.closest('.subcategory-tab');
-                    const subcategoryIndex = subcategoryButton.dataset.subindex;
-                    selectSubcategory(subcategoryIndex);
-                    return;
-                }
-                
-                // Botão de voltar no modal
-                if (element.id === "buttonBack" || element.closest('#buttonBack')) {
-                    e.preventDefault();
+            // Fechar modal ao clicar fora
+            document.getElementById('purchaseModal')?.addEventListener('click', (e) => {
+                if (e.target.id === 'purchaseModal') {
                     closeModalShopItem();
-                    return;
-                }
-                
-                // Botão de confirmar compra
-                if (element.id === "confirmBuyButton" || element.closest('#confirmBuyButton')) {
-                    e.preventDefault();
-                    confirmBuy();
-                    return;
-                }
-                
-                // Links de termos
-                if (element.id === "terms_button" || element.closest('#terms_button')) {
-                    e.preventDefault();
-                    showTermsPage();
-                    return;
-                }
-                
-                // Links de wiki
-                if (element.id === "wiki_button" || element.closest('#wiki_button')) {
-                    e.preventDefault();
-                    showWikiPage();
-                    return;
-                }
-                
-                // Links de loja
-                if (element.id === "shop_button" || element.closest('#shop_button')) {
-                    e.preventDefault();
-                    showShopPage();
-                    return;
-                }
-
-                // Clicar em itens da loja
-                if (element.closest('.mc-card') && element.closest('.mc-card').hasAttribute('data-item')) {
-                    e.preventDefault();
-                    const card = element.closest('.mc-card');
-                    const item = JSON.parse(card.dataset.item);
-                    if (item) {
-                        onClickItemShop(item);
-                    }
-                    return;
-                }
-
-                // Clicar em botões da wiki
-                if (element.closest('.buttonWiki')) {
-                    e.preventDefault();
-                    const wikiButton = element.closest('.buttonWiki');
-                    onClickButtonWiki(wikiButton);
-                    return;
-                }
-                
-                // Fechar dropdowns ao clicar fora
-                if (!element.closest('.category-with-dropdown')) {
-                    document.querySelectorAll('.category-with-dropdown').forEach(cat => {
-                        cat.classList.remove('active');
-                    });
                 }
             });
 
-            // Escrevendo no campo do nick
-            document.addEventListener("input", (e) => {
-                const element = e.target;
-                if (element.id !== "inputNick") return;
-                
-                const img = document.getElementById("playerOfNick");
-                const sanitizedValue = sanitizeInput(element.value);
-                
-                if (sanitizedValue.length >= 3) {
-                    img.src = `https://mc-heads.net/player/${sanitizedValue}`;
-                } else {
-                    img.src = `https://mc-heads.net/player/`;
+            // Fechar dropdowns ao clicar fora
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.category-with-dropdown')) {
+                    closeAllDropdowns();
                 }
             });
         }
 
-        // Alternar dropdown da categoria - CORRIGIDO
+        // Fechar todos os dropdowns
+        function closeAllDropdowns() {
+            document.querySelectorAll('.category-with-dropdown').forEach(cat => {
+                cat.classList.remove('active');
+            });
+        }
+
+        // Alternar dropdown da categoria
         function toggleCategoryDropdown(categoryContainer) {
             const isActive = categoryContainer.classList.contains('active');
             
             // Fecha todos os dropdowns
-            document.querySelectorAll('.category-with-dropdown').forEach(cat => {
-                cat.classList.remove('active');
-            });
+            closeAllDropdowns();
             
             // Se não estava ativo, abre este
             if (!isActive) {
@@ -700,9 +634,7 @@
             }
             
             // Fecha todos os dropdowns
-            document.querySelectorAll('.category-with-dropdown').forEach(cat => {
-                cat.classList.remove('active');
-            });
+            closeAllDropdowns();
             
             // Carrega os itens da categoria
             currentMainCategory = categoryIndex;
@@ -731,7 +663,7 @@
             onClickCategory(json["categorys"][subcategoryIndex]);
         }
 
-        // Atualizar categorias - CORRIGIDO
+        // Atualizar categorias
         async function updateCategorys() {
             const contentCategorys = document.getElementById("contentCategorysShop");
             
@@ -822,6 +754,32 @@
                     contentCategorys.innerHTML += htmlCategory;
                 });
 
+                // Adicionar event listeners para as categorias
+                setTimeout(() => {
+                    document.querySelectorAll('.button_category').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const categoryButton = e.currentTarget;
+                            const categoryIndex = categoryButton.dataset.index;
+                            const categoryContainer = categoryButton.closest('.category-with-dropdown');
+                            const hasSubcategories = categoryContainer.querySelector('.subcategory-dropdown');
+                            
+                            if (hasSubcategories) {
+                                toggleCategoryDropdown(categoryContainer);
+                            } else {
+                                selectMainCategory(categoryIndex);
+                            }
+                        });
+                    });
+
+                    document.querySelectorAll('.subcategory-tab').forEach(tab => {
+                        tab.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const subcategoryIndex = e.currentTarget.dataset.subindex;
+                            selectSubcategory(subcategoryIndex);
+                        });
+                });
+
                 if (contentCategorys.childElementCount > 0) {
                     // Seleciona a primeira categoria por padrão
                     const firstCategory = contentCategorys.querySelector('.button_category');
@@ -838,9 +796,9 @@
                             }
                         }
                     }
-                } else {
-                    contentCategorys.innerHTML = `<div class="loader rounded-full animate-spin bg-transparent border-b-4 border-b-green-500 w-8 h-8"></div>`;
                 }
+                }, 100);
+
             } catch (error) {
                 console.log("Não foi possível conectar às categorias da loja, tentando novamente...");
                 setTimeout(updateCategorys, 5000);
@@ -891,14 +849,27 @@
                 `;
                 contentItems.innerHTML += htmlItem;
             });
+
+            // Adicionar event listeners para os itens
+            setTimeout(() => {
+                document.querySelectorAll('.mc-card[data-item]').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const item = JSON.parse(card.dataset.item);
+                        if (item) {
+                            onClickItemShop(item);
+                        }
+                    });
+                });
+            }, 100);
         }
 
         // Ao clicar em um item da loja
         function onClickItemShop(item) {
             if (!item) return;
             
-            // Salva o conteúdo atual da página
-            htmlBody = document.body.innerHTML;
+            itemSelected = item;
+            confirm = false;
             
             // Cria o modal de compra
             createPurchaseModal(item);
@@ -913,107 +884,104 @@
             const price = item["price"];
             
             const modalHtml = `
-                <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-80">
-                    <div class="mc-container w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-                        <div class="flex justify-between items-center p-4 border-b border-gray-700">
-                            <h2 class="mc-font text-2xl text-green-400">Comprar ${title}</h2>
-                            <button class="text-gray-400 hover:text-white text-2xl clickable" id="buttonBack">&times;</button>
+                <div class="flex justify-between items-center p-4 border-b border-gray-700">
+                    <h2 class="mc-font text-2xl text-green-400">Comprar ${title}</h2>
+                    <button class="text-gray-400 hover:text-white text-2xl clickable close-modal">&times;</button>
+                </div>
+                <div class="p-6">
+                    <div class="flex flex-col lg:flex-row gap-6 mb-6">
+                        <!-- Informações do produto -->
+                        <div class="lg:w-2/5">
+                            <div class="mc-card p-4 flex flex-col items-center text-center">
+                                <img src="${URL}/image/${iconPathItem}" alt="${title}" class="w-32 h-32 mb-4">
+                                <h3 class="mc-font text-xl text-white mb-2">${title}</h3>
+                                <p class="text-green-300 mb-4 mc-font-small">${subtitle}</p>
+                                <div class="mc-font text-2xl text-yellow-400 mb-4">R$ ${price}</div>
+                                <p class="text-gray-300 text-sm mc-font-small">${description}</p>
+                            </div>
                         </div>
-                        <div class="p-6">
-                            <div class="flex flex-col lg:flex-row gap-6 mb-6">
-                                <!-- Informações do produto -->
-                                <div class="lg:w-2/5">
-                                    <div class="mc-card p-4 flex flex-col items-center text-center">
-                                        <img src="${URL}/image/${iconPathItem}" alt="${title}" class="w-32 h-32 mb-4">
-                                        <h3 class="mc-font text-xl text-white mb-2">${title}</h3>
-                                        <p class="text-green-300 mb-4 mc-font-small">${subtitle}</p>
-                                        <div class="mc-font text-2xl text-yellow-400 mb-4" id="priceDiv">R$ ${price}</div>
-                                        <p class="text-gray-300 text-sm mc-font-small">${description}</p>
-                                    </div>
+                        
+                        <!-- Formulário de compra -->
+                        <div class="lg:w-3/5">
+                            <div class="mc-card p-4">
+                                <h3 class="mc-font text-xl text-green-400 mb-4">Informações da Compra</h3>
+                                
+                                <div class="mb-4">
+                                    <label for="inputNick" class="block text-gray-300 mb-2 mc-font-small">Nickname no Minecraft <span class="text-red-500">*</span></label>
+                                    <input type="text" id="inputNick" class="mc-input w-full" placeholder="Ex: lHawk_" maxlength="16">
                                 </div>
                                 
-                                <!-- Formulário de compra -->
-                                <div class="lg:w-3/5">
-                                    <div class="mc-card p-4">
-                                        <h3 class="mc-font text-xl text-green-400 mb-4">Informações da Compra</h3>
-                                        
-                                        <div class="mb-4">
-                                            <label for="inputNick" class="block text-gray-300 mb-2 mc-font-small">Nickname no Minecraft <span class="text-red-500">*</span></label>
-                                            <input type="text" id="inputNick" class="mc-input w-full" placeholder="Ex: lHawk_" maxlength="16">
-                                        </div>
-                                        
-                                        <div class="mb-6">
-                                            <label class="block text-gray-300 mb-2 mc-font-small">Quantidade</label>
-                                            <div class="flex items-center justify-between max-w-xs">
-                                                <button id="minus" class="mc-button w-10 h-10 flex items-center justify-center text-lg clickable">-</button>
-                                                <div id="inputQuantity" class="mc-font text-xl mx-4 w-12 text-center">1</div>
-                                                <button id="plus" class="mc-button w-10 h-10 flex items-center justify-center text-lg clickable">+</button>
-                                            </div>
-                                        </div>
-                                        
-                                        <button id="confirmBuyButton" class="mc-button w-full flex items-center justify-center py-3 text-lg clickable">
-                                            <img src="./src/images/check.png" alt="Confirmar" class="w-6 h-6 mr-2 invert">
-                                            <span class="mc-font">Confirmar Compra</span>
-                                        </button>
-                                    </div>
-                                    
-                                    <!-- Preview do jogador -->
-                                    <div class="mc-card p-4 mt-4 flex flex-col items-center">
-                                        <img src="https://mc-heads.net/player/" alt="Player Skin" class="w-32 h-auto mb-2" id="playerOfNick">
-                                        <p class="text-gray-300 mc-font-small text-center">Preview do seu personagem</p>
-                                    </div>
+                                <div class="mb-6">
+                                    <label class="block text-gray-300 mb-2 mc-font-small">Quantidade</label>
+                                    <div class="mc-font text-xl text-green-300 mc-font-small">1x</div>
                                 </div>
+                                
+                                <button id="confirmBuyButton" class="mc-button w-full flex items-center justify-center py-3 text-lg clickable">
+                                    <img src="./src/images/check.png" alt="Confirmar" class="w-6 h-6 mr-2 invert">
+                                    <span class="mc-font">Confirmar Compra</span>
+                                </button>
                             </div>
                             
-                            <!-- Aviso importante -->
-                            <div class="mc-card p-4 bg-red-900 bg-opacity-30 border-red-700">
-                                <div class="flex items-start">
-                                    <img src="./src/images/warning.png" alt="Aviso" class="w-6 h-6 mr-3 mt-1 invert">
-                                    <div>
-                                        <span class="font-bold text-red-300 mc-font-small">ATENÇÃO:</span>
-                                        <p class="text-gray-300 mc-font-small mt-1">
-                                            Ao comprar o produto, você concorda automaticamente com nossos 
-                                            <a href="#" class="text-green-300 hover:underline clickable" onclick="showTermsPage()">termos e condições</a>. 
-                                            Após o pagamento, você deverá entrar em nosso servidor com o nick selecionado e executar o comando 
-                                            <span class="text-green-400 mc-font-small">/CaixaPostal</span> para verificar o status do pagamento e resgatar suas compras.
-                                        </p>
-                                    </div>
-                                </div>
+                            <!-- Preview do jogador -->
+                            <div class="mc-card p-4 mt-4 flex flex-col items-center">
+                                <img src="https://mc-heads.net/player/" alt="Player Skin" class="w-32 h-auto mb-2" id="playerOfNick">
+                                <p class="text-gray-300 mc-font-small text-center">Preview do seu personagem</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Aviso importante -->
+                    <div class="mc-card p-4 bg-red-900 bg-opacity-30 border-red-700">
+                        <div class="flex items-start">
+                            <img src="./src/images/warning.png" alt="Aviso" class="w-6 h-6 mr-3 mt-1 invert">
+                            <div>
+                                <span class="font-bold text-red-300 mc-font-small">ATENÇÃO:</span>
+                                <p class="text-gray-300 mc-font-small mt-1">
+                                    Ao comprar o produto, você concorda automaticamente com nossos 
+                                    <a href="#" class="text-green-300 hover:underline clickable" id="termsLink">termos e condições</a>. 
+                                    Após o pagamento, você deverá entrar em nosso servidor com o nick selecionado e executar o comando 
+                                    <span class="text-green-400 mc-font-small">/CaixaPostal</span> para verificar o status do pagamento e resgatar suas compras.
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
             `;
             
-            quantity = 1;
-            itemSelected = item;
-            confirm = false;
+            const modalContent = document.querySelector('.modal-content');
+            modalContent.innerHTML = modalHtml;
             
-            document.body.innerHTML = modalHtml;
-            updatePriceItem();
-            setupEventListeners();
-        }
-
-        // Atualizar quantidade - CORREÇÃO FINAL
-        function updateQuantity(change) {
-            // CORREÇÃO: Usa a variável global quantity diretamente
-            quantity += change;
-            quantity = Math.max(1, Math.min(10, quantity)); // Limita entre 1 e 10
+            // Adicionar event listeners para o modal
+            document.querySelector('.close-modal')?.addEventListener('click', closeModalShopItem);
+            document.getElementById('confirmBuyButton')?.addEventListener('click', confirmBuy);
+            document.getElementById('termsLink')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeModalShopItem();
+                showTermsPage();
+            });
             
-            const inputQuantity = document.getElementById("inputQuantity");
-            if (inputQuantity) {
-                inputQuantity.textContent = quantity;
+            // Event listener para o input do nick
+            const nickInput = document.getElementById('inputNick');
+            const playerImg = document.getElementById('playerOfNick');
+            
+            if (nickInput && playerImg) {
+                nickInput.addEventListener('input', (e) => {
+                    const sanitizedValue = sanitizeInput(e.target.value);
+                    if (sanitizedValue.length >= 3) {
+                        playerImg.src = `https://mc-heads.net/player/${sanitizedValue}`;
+                    } else {
+                        playerImg.src = `https://mc-heads.net/player/`;
+                    }
+                });
             }
-            updatePriceItem();
+            
+            // Mostrar o modal
+            document.getElementById('purchaseModal').classList.add('active');
         }
 
-        // Atualizar preço do item
-        function updatePriceItem() {
-            const element = document.getElementById("priceDiv");
-            if (!element || !itemSelected) return;
-            
-            const totalPrice = (itemSelected["price"] * quantity).toFixed(2);
-            element.textContent = `R$ ${totalPrice}`;
+        // Fechar modal de compra
+        function closeModalShopItem() {
+            document.getElementById('purchaseModal').classList.remove('active');
         }
 
         // Copiar IP para a área de transferência
@@ -1033,6 +1001,7 @@
                     <span class="mc-font-small bg-green-700 px-3 py-1 rounded">✓</span>
                 `;
                 
+                clickedIp = true;
                 setTimeout(() => {
                     button.innerHTML = originalHTML;
                     clickedIp = false;
@@ -1046,6 +1015,7 @@
                     <span class="mc-font-small bg-red-700 px-3 py-1 rounded">✗</span>
                 `;
                 
+                clickedIp = true;
                 setTimeout(() => {
                     button.innerHTML = originalHTML;
                     clickedIp = false;
@@ -1068,13 +1038,6 @@
             input = input.replace(/\\s+/g, ' ');
             
             return input;
-        }
-
-        // Fechar modal de compra
-        function closeModalShopItem() {
-            document.body.innerHTML = htmlBody;
-            // Reconfigura os event listeners após restaurar o conteúdo
-            setupEventListeners();
         }
 
         // Confirmar compra
@@ -1120,7 +1083,7 @@
                         description: title + ", " + subtitle + ". " + description,
                         pictureUrl: `${URL}/image/${iconPathItem}`,
                         unit_price: Number(price).toFixed(2),
-                        quantity: quantity,
+                        quantity: 1, // SEMPRE 1, REMOVIDA A OPÇÃO DE QUANTIDADE
                         itemIndex: itemIndex,
                         categoryIndex: categoryIndex
                     })
@@ -1213,14 +1176,23 @@
                     index++;
                 }
 
-                if (contentButtons.childElementCount > 0) {
-                    const firstElement = contentButtons.querySelector(".buttonWiki");
-                    if (firstElement) {
-                        onClickButtonWiki(firstElement);
+                // Adicionar event listeners para os botões da wiki
+                setTimeout(() => {
+                    document.querySelectorAll('.buttonWiki').forEach(button => {
+                        button.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            onClickButtonWiki(e.currentTarget);
+                        });
+                    });
+
+                    if (contentButtons.childElementCount > 0) {
+                        const firstElement = contentButtons.querySelector(".buttonWiki");
+                        if (firstElement) {
+                            onClickButtonWiki(firstElement);
+                        }
                     }
-                } else {
-                    contentButtons.innerHTML = `<div class="loader rounded-full animate-spin bg-transparent border-b-4 border-b-green-500 w-8 h-8 mx-auto"></div>`;
-                }
+                }, 100);
+
             } catch (error) {
                 console.log("Não foi possível conectar à wiki, tentando novamente...");
                 setTimeout(loadWikiData, 5000);
